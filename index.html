@@ -217,20 +217,43 @@
                 }
             }
         }
+        function selectLevel(lvl) {
+            currentLevel = lvl;
+            usedIndices = []; // تصغير الفهرس عند تغيير المستوى
+            document.getElementById('level-selection').style.display = 'none';
+            resetToChallenge();
+        }
+
         function applyCard(player) {
-            if (currentGame.id === 'boss_dos' && scores[player] >= 6) { triggerDos(player); return; }
+            if (currentGame.id === 'boss_dos' && scores[player] >= 6) { 
+                triggerDos(player); 
+                return; 
+            }
         
-            let pool = currentGame.isMultiLevel ? currentGame.levels[currentLevel] : currentGame.questions;
+            // التعديل الجوهري هنا: التأكد من سحب الكروت من المستويات أو من الأسئلة العادية
+            let pool;
+            if (currentGame.isMultiLevel) {
+                pool = currentGame.levels[currentLevel];
+            } else {
+                // لو مفيش questions (زي حالة بوس أو دوس أحياناً) يسحب من الأسئلة المتاحة
+                pool = currentGame.questions || currentGame.dosQuestions;
+            }
         
-            if (usedIndices.length === pool.length) {
-                alert("انتهت الكروت!"); currentLevel = null; resetToChallenge(); return;
+            if (!pool || usedIndices.length === pool.length) {
+                alert("انتهت الكروت في هذا المستوى!"); 
+                currentLevel = null; 
+                resetToChallenge(); 
+                return;
             }
         
             let idx;
-            do { idx = Math.floor(Math.random() * pool.length); } while (usedIndices.includes(idx));
-            usedIndices.push(idx);
+            do { 
+                idx = Math.floor(Math.random() * pool.length); 
+            } while (usedIndices.includes(idx));
             
+            usedIndices.push(idx);
             activePlayer = player;
+            
             document.getElementById('display-card').innerText = pool[idx];
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
@@ -238,7 +261,10 @@
             if (currentGame.hasScore) {
                 document.getElementById('scoring-group').style.display = 'flex';
             } else {
-                if (currentGame.id === 'boss_dos') { scores[player]++; updateScoreUI(); }
+                if (currentGame.id === 'boss_dos') { 
+                    scores[player]++; 
+                    updateScoreUI(); 
+                }
                 document.getElementById('next-btn').style.display = 'block';
             }
         
