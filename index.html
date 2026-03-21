@@ -229,7 +229,7 @@
             document.body.style.backgroundColor = "var(--dos-gold)";
             const card = document.getElementById('display-card');
             card.classList.add('dos-mode');
-            card.innerHTML = `<span style="font-size:0.9rem; display:block; margin-bottom:10px;">🔥 كارت دوس إجباري 🔥</span>${randomDos}`;            
+            card.innerHTML = `${randomDos}`;            
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
