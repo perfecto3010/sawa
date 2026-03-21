@@ -58,6 +58,9 @@
             line-height: 1.5; transition: 0.4s; overflow-y: auto;
         }
 
+        #timer-display { font-size: 2.5rem; color: #f44336; margin: 10px 0; font-weight: bold; display: none; }
+        .timer-active { animation: pulse 1s infinite; }
+
         #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
 
@@ -108,8 +111,9 @@
             <button class="exit-btn" onclick="location.reload()">✕</button>
         </div>
 
-        <div id="display-card" class="fade-in">البداية..</div>
-
+        <div id="display-card" class="fade-in">
+            <div id="timer-display">60</div> <div id="card-text">البداية..</div>
+        </div>
         <div id="level-selection" class="level-selection fade-in">
             <button class="level-btn" style="background:#4caf50" onclick="selectLevel('level1')">هادي (صراحة) 😊</button>
             <button class="level-btn" style="background:#ff9800" onclick="selectLevel('level2')">متوسط (جرأة) 😉</button>
@@ -233,6 +237,7 @@
                     document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
                 }
             }
+            clearInterval(window.gameTimer);
         }
         function selectLevel(lvl) {
             currentLevel = lvl;
@@ -271,7 +276,19 @@
             usedIndices.push(idx);
             activePlayer = player;
             
-            document.getElementById('display-card').innerText = pool[idx];
+            const cardTextElement = document.getElementById('card-text') || document.getElementById('display-card');
+            const question = pool[idx];
+            cardTextElement.innerText = question;
+            
+            // فحص وجود كلمة "مدة"
+            const timerDisplay = document.getElementById('timer-display');
+            if (question.includes("مدة")) {
+                timerDisplay.style.display = 'block';
+                startTimer(60); // يبدأ من 60 ثانية مثلاً
+            } else {
+                timerDisplay.style.display = 'none';
+                clearInterval(window.gameTimer);
+            }
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
         
@@ -294,6 +311,23 @@
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
+        function startTimer(seconds) {
+            clearInterval(window.gameTimer);
+            let timeLeft = seconds;
+            const display = document.getElementById('timer-display');
+            display.innerText = timeLeft;
+            
+            window.gameTimer = setInterval(() => {
+                timeLeft--;
+                display.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(window.gameTimer);
+                    display.innerText = "انتهى الوقت! ⏰";
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+            }, 1000);
+        }
+
         function triggerDos(player) {
             scores[player] -= 6; updateScoreUI();
             const dos = currentGame.dosQuestions[Math.floor(Math.random() * currentGame.dosQuestions.length)];
@@ -303,6 +337,7 @@
             card.innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${dos}`;
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
+            clearInterval(window.gameTimer);
         }
 
         function confirmPoint(pts) { scores[activePlayer] += pts; updateScoreUI(); resetToChallenge(); }
