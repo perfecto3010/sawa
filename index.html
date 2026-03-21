@@ -71,6 +71,9 @@
         .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* تنسيق المؤقت */
+        #timer-display { display: none; color: #f44336; font-size: 2.2rem; margin-bottom: 10px; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -108,7 +111,10 @@
             <button class="exit-btn" onclick="location.reload()">✕</button>
         </div>
 
-        <div id="display-card" class="fade-in">البداية..</div>
+        <div id="display-card" class="fade-in">
+            <div id="timer-display">60</div>
+            <div id="text-container">البداية..</div>
+        </div>
 
         <div id="level-selection" class="level-selection fade-in">
             <button class="level-btn" style="background:#4caf50" onclick="selectLevel('level1')">هادي (صراحة) 😊</button>
@@ -142,7 +148,8 @@
         let scores = { wife: 0, husband: 0 };
         let activePlayer = null;
         let currentLevel = null;
-        let nextTurn = 'wife'; // متغير جديد لتتبع الأدوار في اللعبة الرابعة
+        let nextTurn = 'wife';
+        let timerInterval = null;
 
         const gameList = document.getElementById('game-list');
         if(typeof allGames !== 'undefined') {
@@ -171,6 +178,7 @@
                 cards[randomIndex].click();
             }
         }
+
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
@@ -180,17 +188,18 @@
         }
 
         function resetToChallenge() {
+            clearInterval(timerInterval);
+            document.getElementById('timer-display').style.display = 'none';
             document.getElementById('display-card').classList.remove('dos-mode');
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
             
-            // إعادة تعيين أسماء الزراير للأصل (عشان لو رجعنا من لعبة الأوضاع)
             document.getElementById('btn-wife').innerText = "الزوجة 🌸";
             document.getElementById('btn-husband').innerText = "الزوج 💙";
             
             if (currentGame.isMultiLevel && !currentLevel) {
-                document.getElementById('display-card').innerText = "اختر درجة الحرارة 🔥";
+                document.getElementById('text-container').innerText = "اختر درجة الحرارة 🔥";
                 document.getElementById('challenge-group').style.display = 'none';
                 document.getElementById('level-selection').style.display = 'flex';
                 return;
@@ -199,65 +208,59 @@
             document.getElementById('challenge-group').style.display = 'flex';
             document.body.style.backgroundColor = "var(--neutral-dark)";
             
-            // 1. منطق لعبة الأوضاع الجنسية (زرار واحد عشوائي)
             if (currentGame.id === 'positions_game') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "جاهزين للتغيير؟";
-                document.getElementById('display-card').innerText = "دوس وشوف حظكم في وضع إيه النهاردة! 🎲";
-                
+                document.getElementById('text-container').innerText = "دوس وشوف حظكم في وضع إيه النهاردة! 🎲";
                 document.getElementById('btn-wife').style.display = 'block';
-                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲"; // تغيير نص الزرار
-                document.getElementById('btn-husband').style.display = 'none'; // إخفاء زرار الزوج
+                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲";
+                document.getElementById('btn-husband').style.display = 'none';
             } 
-            // 2. منطق الألعاب اللي بالتبادل (شوق أو دوق و سلم الشوق)
             else if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "الدور الآن على:";
-                
                 document.getElementById('btn-wife').style.display = (nextTurn === 'wife') ? 'block' : 'none';
                 document.getElementById('btn-husband').style.display = (nextTurn === 'husband') ? 'block' : 'none';
-                
-                document.getElementById('display-card').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
+                document.getElementById('text-container').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
             } 
-            // 3. باقي الألعاب (حجر ورقة مقص)
             else {
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
                 document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
                 
                 if (currentGame.id === 'lehalibo') {
-                    document.getElementById('display-card').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
+                    document.getElementById('text-container').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
                     document.getElementById('score-board').style.display = 'flex';
                 } else {
-                    document.getElementById('display-card').innerText = "✌️ حجر ورقة مقص.. مين اللي كسب؟";
+                    document.getElementById('text-container').innerText = "✌️ حجر ورقة مقص.. مين اللي كسب؟";
                     document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
                 }
             }
         }
+
         function selectLevel(lvl) {
             currentLevel = lvl;
-            usedIndices = []; // تصغير الفهرس عند تغيير المستوى
+            usedIndices = [];
             document.getElementById('level-selection').style.display = 'none';
             resetToChallenge();
         }
 
         function applyCard(player) {
+            clearInterval(timerInterval);
             if (currentGame.id === 'boss_dos' && scores[player] >= 6) { 
                 triggerDos(player); 
                 return; 
             }
         
-            // التعديل الجوهري هنا: التأكد من سحب الكروت من المستويات أو من الأسئلة العادية
             let pool;
             if (currentGame.isMultiLevel) {
                 pool = currentGame.levels[currentLevel];
             } else {
-                // لو مفيش questions (زي حالة بوس أو دوس أحياناً) يسحب من الأسئلة المتاحة
                 pool = currentGame.questions || currentGame.dosQuestions;
             }
         
             if (!pool || usedIndices.length === pool.length) {
-                alert("انتهت الكروت في هذا المستوى!"); 
+                alert("انتهت الكروت!"); 
                 currentLevel = null; 
                 resetToChallenge(); 
                 return;
@@ -271,10 +274,20 @@
             usedIndices.push(idx);
             activePlayer = player;
             
-            document.getElementById('display-card').innerText = pool[idx];
+            const question = pool[idx];
+            document.getElementById('text-container').innerText = question;
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
         
+            // فحص المؤقت
+            const timerDisp = document.getElementById('timer-display');
+            if (question.includes("مدة")) {
+                timerDisp.style.display = 'block';
+                startTimer(60);
+            } else {
+                timerDisp.style.display = 'none';
+            }
+
             if (currentGame.hasScore) {
                 document.getElementById('scoring-group').style.display = 'flex';
             } else {
@@ -285,7 +298,6 @@
                 document.getElementById('next-btn').style.display = 'block';
             }
         
-            // تبديل الدور تلقائياً للعبة التالتة والرابعة
             if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 nextTurn = (player === 'wife') ? 'husband' : 'wife';
             }
@@ -294,13 +306,30 @@
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
+        function startTimer(seconds) {
+            let timeLeft = seconds;
+            const display = document.getElementById('timer-display');
+            display.innerText = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                display.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    display.innerText = "⏰";
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                }
+            }, 1000);
+        }
+
         function triggerDos(player) {
+            clearInterval(timerInterval);
+            document.getElementById('timer-display').style.display = 'none';
             scores[player] -= 6; updateScoreUI();
             const dos = currentGame.dosQuestions[Math.floor(Math.random() * currentGame.dosQuestions.length)];
             document.body.style.backgroundColor = "var(--dos-gold)";
             const card = document.getElementById('display-card');
             card.classList.add('dos-mode');
-            card.innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${dos}`;
+            document.getElementById('text-container').innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${dos}`;
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
         }
