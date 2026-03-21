@@ -10,12 +10,29 @@
 
     <style>
         :root { 
-            --bg: #f8f9fa; 
-            --wife-color: #ff85a2;
-            --husband-color: #4a90e2;
-            --neutral-dark: #1a1a1a;
-            --dos-gold: #ffc107;
-            --dos-text: #541010;
+            --bg: #121212; /* خلفية داكنة وفخمة */
+            --wife-color: #ff4d6d; /* وردي حيوي */
+            --husband-color: #4361ee; /* أزرق ملكي */
+            --accent-gold: #ffb703; /* ذهبي للتنبيهات والمميزات */
+            
+            /* ألوان زراير القائمة الرئيسية */
+            --btn-1: #c9184a; /* لهاليبو - أحمر عميق */
+            --btn-2: #7209b7; /* بوس أو دوس - أرجواني */
+            --btn-3: #ff758f; /* شوق أو دوق - وردي ناعم */
+            --btn-4: #3f37c9; /* سلم الشوق - أزرق عميق */
+            --btn-5: #fb5607; /* أوضاع لهاليبو - برتقالي ناري */
+        }
+
+        .game-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.2));
+            backdrop-filter: blur(5px); /* تأثير زجاجي شيك */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .game-card:active {
+            transform: scale(0.95); /* تأثير الضغط */
         }
         
         body { 
