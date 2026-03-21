@@ -199,8 +199,7 @@
             document.body.style.backgroundColor = "var(--dos-gold)";
             const card = document.getElementById('display-card');
             card.classList.add('dos-mode');
-            card.innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${randomDos}`;
-            
+            card.innerHTML = `${randomDos}`;            
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
         }
