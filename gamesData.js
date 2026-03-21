@@ -146,6 +146,7 @@ questions: [
         color: "#6d0505",
         accent: "#ff4500",
         hasScore: false,
+        isTurnBased: true, // تفعيل نظام الأدوار التلقائي
         isMultiLevel: true, // علامة للكود عشان يظهر زراير اختيار المستوى
         levels: {
             level1: [ // صراحة 🔥
