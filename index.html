@@ -88,8 +88,8 @@
                 <button class="point-btn" style="background:var(--husband-color)" onclick="updatePoints(1, 'husband')">الزوج (+1)</button>
             </div>
             <div class="score-row">
-                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'wife')">انسحاب الزوجة (-2)</button>
-                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'husband')">انسحاب الزوج (-2)</button>
+                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'wife')">انسحاب (-2)</button>
+                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'husband')">انسحاب (-2)</button>
             </div>
         </div>
         
@@ -127,13 +127,11 @@
             scores = { wife: 0, husband: 0 };
             document.getElementById('w-score').innerText = "0";
             document.getElementById('h-score').innerText = "0";
-
             document.body.style.backgroundColor = currentGame.color;
             document.getElementById('rules-title').innerText = currentGame.title;
             document.getElementById('rules-title').style.color = currentGame.accent;
             document.getElementById('rules-text').innerText = currentGame.rules;
             document.getElementById('confirm-rules-btn').style.backgroundColor = currentGame.accent;
-
             document.getElementById('lobby').style.display = 'none';
             document.getElementById('rules-screen').style.display = 'flex';
         }
@@ -153,7 +151,7 @@
         function drawCard() {
             resetTimer();
             if (usedIndices.length === currentGame.questions.length) {
-                alert("خلصنا الكروت! الفائز هو صاحب النقاط الأعلى.");
+                alert("خلصنا الكروت!");
                 location.reload();
                 return;
             }
@@ -167,12 +165,10 @@
             document.getElementById('display-card').innerText = q;
 
             if (currentGame.hasScore) {
-                // منطق لهاليبو: خلفية محايدة + سؤال من الذي ضحك
-                document.body.style.backgroundColor = var(--neutral-dark);
+                document.body.style.backgroundColor = "var(--neutral-dark)";
                 document.getElementById('turn-label').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
                 document.getElementById('score-btns').style.display = 'flex';
             } else {
-                // المنطق القديم: تبديل الأدوار التلقائي
                 isWifeTurn = !isWifeTurn;
                 document.body.style.backgroundColor = isWifeTurn ? "var(--wife-color)" : "var(--husband-color)";
                 document.getElementById('turn-label').innerText = isWifeTurn ? "دور الزوجة 🌸" : "دور الزوج 💙";
@@ -185,9 +181,7 @@
             } else {
                 document.getElementById('timer-box').style.display = 'none';
             }
-
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
-            if (navigator.vibrate) navigator.vibrate(50);
         }
 
         function updatePoints(pts, player) {
@@ -202,7 +196,6 @@
             }
             document.getElementById('score-btns').style.display = 'none';
             document.getElementById('turn-label').innerText = "تم تسجيل النقطة ✅";
-            if (navigator.vibrate) navigator.vibrate(pts > 0 ? 100 : [50, 50, 50]);
         }
 
         function startTimer() {
@@ -219,27 +212,17 @@
             }, 1000);
         }
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            document.getElementById('timer-btn').style.display = 'block';
-        }
+        function resetTimer() { clearInterval(timerInterval); document.getElementById('timer-btn').style.display = 'block'; }
 
         function checkAuth() {
-            const CORRECT_PASSWORD = "3042023"; 
-            const password = prompt("كلمة السر:");
-            if (password === CORRECT_PASSWORD) {
+            const pass = prompt("كلمة السر:");
+            if (pass === "3042023") {
                 document.getElementById('auth-overlay').style.display = 'none';
                 sessionStorage.setItem('isAuthorized', 'true');
-            } else if (password !== null) {
-                alert("خطأ!");
             }
         }
 
-        window.onload = () => {
-            if (sessionStorage.getItem('isAuthorized') === 'true') {
-                document.getElementById('auth-overlay').style.display = 'none';
-            }
-        };
+        window.onload = () => { if (sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
     </script>
 </body>
 </html>
