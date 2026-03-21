@@ -11,46 +11,39 @@
             --card-white: #ffffff;
             --wife-color: #ff85a2;
             --husband-color: #4a90e2;
+            --neutral-dark: #343a40;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; transition: background-color 0.8s ease; overflow: hidden; }
         
-        /* Auth Overlay */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
         #auth-overlay img { width: 80px; margin-bottom: 20px; }
 
-        /* Screens Logic */
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; }
         #lobby { display: flex; }
 
-        /* Lobby Styles */
         .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
         .game-card:active { transform: scale(0.95); }
 
-        /* Rules Screen */
         #rules-screen { background: rgba(0,0,0,0.05); z-index: 100; }
         .rules-container { background: white; padding: 40px 25px; border-radius: 30px; width: 85%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
-        #rules-text { font-size: 1.3rem; line-height: 1.8; color: #444; margin: 25px 0; }
+        #rules-text { font-size: 1.1rem; line-height: 1.6; color: #444; margin: 25px 0; }
 
-        /* Score Board (Conditional) */
         #score-board { display: none; justify-content: center; gap: 15px; margin-bottom: 20px; width: 100%; }
-        .score-box { flex: 1; max-width: 120px; padding: 10px; border-radius: 15px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; }
+        .score-box { flex: 1; max-width: 120px; padding: 10px; border-radius: 15px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; transition: 0.3s; }
         .score-val { font-size: 1.5rem; display: block; }
 
-        /* Game Play Screen */
-        #turn-label { margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 15px; transition: 0.3s; }
-        #display-card { background: white; padding: 35px 25px; border-radius: 25px; width: 85%; max-width: 350px; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: bold; border: 8px solid #333; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 1.4; text-align: center; }
+        #turn-label { margin-bottom: 10px; font-size: 1.1rem; font-weight: bold; background: rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 15px; text-align: center; min-height: 1.5rem; }
+        #display-card { background: white; padding: 35px 25px; border-radius: 25px; width: 85%; max-width: 350px; min-height: 180px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; border: 8px solid #333; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 1.4; text-align: center; transition: 0.3s; }
 
-        /* Point Buttons */
-        #score-btns { display: none; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 350px; }
-        .point-btn { flex: 1; padding: 12px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .plus { background: #4caf50; }
-        .minus { background: #f44336; }
-
-        /* Timer & Buttons */
+        #score-btns { display: none; flex-direction: column; gap: 8px; margin-bottom: 20px; width: 100%; max-width: 350px; text-align: center; }
+        .score-row { display: flex; gap: 10px; width: 100%; }
+        .point-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        
         #timer-box { display: none; margin-bottom: 20px; flex-direction: column; align-items: center; }
-        #time-circle { width: 60px; height: 60px; border-radius: 50%; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
-        button.main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 250px; }
-        .back-btn { margin-top: 20px; background: none; border: 1px solid rgba(255,255,255,0.8); color: white; padding: 8px 20px; border-radius: 10px; cursor: pointer; opacity: 0.8; }
+        #time-circle { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-bottom: 8px; }
+        
+        button.main-btn { padding: 16px 50px; font-size: 1.2rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 250px; }
+        .back-btn { margin-top: 15px; background: none; border: 1px solid rgba(255,255,255,0.8); color: white; padding: 8px 20px; border-radius: 10px; cursor: pointer; opacity: 0.8; }
         
         .fade-in { animation: fadeIn 0.4s ease-in forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -61,21 +54,21 @@
     <div id="auth-overlay">
         <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="Sawa Logo">
         <h2>Sawa | سوا</h2>
-        <button onclick="checkAuth()" style="padding: 12px 35px; border-radius: 25px; border: none; background: #ff85a2; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer;">دخول</button>
+        <button onclick="checkAuth()" style="padding: 12px 35px; border-radius: 25px; border: none; background: var(--wife-color); color: white; font-weight: bold; cursor: pointer;">دخول</button>
     </div>
 
     <div id="lobby" class="screen fade-in">
-        <h1 style="font-size: 2.5rem; color: #333; margin-top: 0;">Sawa سوا ❤️</h1>
-        <p style="margin-bottom: 30px; color: #666;">اختر عالمنا الليلة</p>
+        <h1 style="font-size: 2.2rem; color: #333; margin: 0;">Sawa سوا ❤️</h1>
+        <p style="margin-bottom: 25px; color: #666;">اختر عالمنا الليلة</p>
         <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
     </div>
 
     <div id="rules-screen" class="screen fade-in">
         <div class="rules-container">
-            <h2 id="rules-title" style="margin-top: 0; font-size: 2rem;"></h2>
+            <h2 id="rules-title" style="margin-top: 0;"></h2>
             <div id="rules-text"></div>
             <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">جاهزين.. نبدأ! 🚀</button>
-            <div style="margin-top: 15px;"><a href="#" onclick="location.reload()" style="color: #888; text-decoration: none; font-size: 0.9rem;">رجوع</a></div>
+            <div style="margin-top: 15px;"><a href="#" onclick="location.reload()" style="color: #888; text-decoration: none; font-size: 0.8rem;">رجوع للرئيسية</a></div>
         </div>
     </div>
 
@@ -89,8 +82,15 @@
         <div id="display-card">جاهز؟</div>
 
         <div id="score-btns">
-            <button class="point-btn plus" onclick="updatePoints(1)">إجابة (+1)</button>
-            <button class="point-btn minus" onclick="updatePoints(-2)">انسحاب (-2)</button>
+            <p style="color:white; margin: 0 0 5px 0; font-size: 0.9rem;">مين اللي ضحك الأول؟</p>
+            <div class="score-row">
+                <button class="point-btn" style="background:var(--wife-color)" onclick="updatePoints(1, 'wife')">الزوجة (+1)</button>
+                <button class="point-btn" style="background:var(--husband-color)" onclick="updatePoints(1, 'husband')">الزوج (+1)</button>
+            </div>
+            <div class="score-row">
+                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'wife')">انسحاب الزوجة (-2)</button>
+                <button class="point-btn" style="background:#f44336; font-size:0.75rem;" onclick="updatePoints(-2, 'husband')">انسحاب الزوج (-2)</button>
+            </div>
         </div>
         
         <div id="timer-box">
@@ -100,7 +100,7 @@
 
         <button class="main-btn" id="draw-btn" onclick="drawCard()">سحب كارت</button>
         <button class="back-btn" onclick="location.reload()">إنهاء اللعبة 🔄</button>
-        <div id="progress" style="margin-top:15px; font-size:0.9rem; font-weight:bold; color: white;"></div>
+        <div id="progress" style="margin-top:12px; font-size:0.8rem; font-weight:bold; color: white;"></div>
     </div>
 
     <script src="gamesData.js"></script>
@@ -111,7 +111,6 @@
         let timerInterval;
         let scores = { wife: 0, husband: 0 };
 
-        // إنشاء قائمة الألعاب
         const gameList = document.getElementById('game-list');
         Object.values(allGames).forEach(game => {
             const btn = document.createElement('button');
@@ -125,8 +124,6 @@
         function showRules(gameId) {
             currentGame = allGames[gameId];
             usedIndices = [];
-            
-            // Automatic Reset Scores
             scores = { wife: 0, husband: 0 };
             document.getElementById('w-score').innerText = "0";
             document.getElementById('h-score').innerText = "0";
@@ -144,11 +141,8 @@
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            
-            // تهيئة واجهة اللعبة حسب نوعها
             document.getElementById('score-board').style.display = currentGame.hasScore ? 'flex' : 'none';
             document.getElementById('score-btns').style.display = 'none';
-            
             document.getElementById('draw-btn').style.backgroundColor = currentGame.accent;
             document.getElementById('display-card').style.borderColor = currentGame.accent;
             document.getElementById('display-card').innerText = "جاهزين؟";
@@ -159,7 +153,7 @@
         function drawCard() {
             resetTimer();
             if (usedIndices.length === currentGame.questions.length) {
-                alert("خلصنا اللعبة دي! اختار لعبة تانية.");
+                alert("خلصنا الكروت! الفائز هو صاحب النقاط الأعلى.");
                 location.reload();
                 return;
             }
@@ -172,21 +166,19 @@
             const q = currentGame.questions[idx];
             document.getElementById('display-card').innerText = q;
 
-            // تغيير الخلفية حسب الدور
-            if (isWifeTurn) {
-                document.body.style.backgroundColor = "var(--wife-color)";
-                document.getElementById('turn-label').innerText = "دور الزوجة 🌸";
-            } else {
-                document.body.style.backgroundColor = "var(--husband-color)";
-                document.getElementById('turn-label').innerText = "دور الزوج 💙";
-            }
-
-            // إظهار أزرار النقاط في لهاليبو فقط
             if (currentGame.hasScore) {
+                // منطق لهاليبو: خلفية محايدة + سؤال من الذي ضحك
+                document.body.style.backgroundColor = var(--neutral-dark);
+                document.getElementById('turn-label').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
                 document.getElementById('score-btns').style.display = 'flex';
+            } else {
+                // المنطق القديم: تبديل الأدوار التلقائي
+                isWifeTurn = !isWifeTurn;
+                document.body.style.backgroundColor = isWifeTurn ? "var(--wife-color)" : "var(--husband-color)";
+                document.getElementById('turn-label').innerText = isWifeTurn ? "دور الزوجة 🌸" : "دور الزوج 💙";
+                document.getElementById('score-btns').style.display = 'none';
             }
 
-            // Timer Logic
             if (q.includes("(مؤقت)") && currentGame.timerDuration > 0) {
                 document.getElementById('timer-box').style.display = 'flex';
                 document.getElementById('time-circle').innerText = currentGame.timerDuration;
@@ -194,21 +186,22 @@
                 document.getElementById('timer-box').style.display = 'none';
             }
 
-            isWifeTurn = !isWifeTurn;
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
-        function updatePoints(pts) {
-            // بما إن isWifeTurn بتتعكس "بعد" السحب، فاللي جاوب هو عكس الحالة الحالية
-            if (!isWifeTurn) { 
+        function updatePoints(pts, player) {
+            if (player === 'wife') {
                 scores.wife += pts;
                 document.getElementById('w-score').innerText = scores.wife;
+                document.body.style.backgroundColor = "var(--wife-color)";
             } else {
                 scores.husband += pts;
                 document.getElementById('h-score').innerText = scores.husband;
+                document.body.style.backgroundColor = "var(--husband-color)";
             }
             document.getElementById('score-btns').style.display = 'none';
+            document.getElementById('turn-label').innerText = "تم تسجيل النقطة ✅";
             if (navigator.vibrate) navigator.vibrate(pts > 0 ? 100 : [50, 50, 50]);
         }
 
@@ -233,16 +226,16 @@
 
         function checkAuth() {
             const CORRECT_PASSWORD = "3042023"; 
-            const password = prompt("من فضلك أدخل كلمة السر للدخول:");
+            const password = prompt("كلمة السر:");
             if (password === CORRECT_PASSWORD) {
                 document.getElementById('auth-overlay').style.display = 'none';
                 sessionStorage.setItem('isAuthorized', 'true');
             } else if (password !== null) {
-                alert("كلمة سر خاطئة! حاول مرة أخرى.");
+                alert("خطأ!");
             }
         }
 
-        window.onload = function() {
+        window.onload = () => {
             if (sessionStorage.getItem('isAuthorized') === 'true') {
                 document.getElementById('auth-overlay').style.display = 'none';
             }
