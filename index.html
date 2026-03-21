@@ -7,9 +7,7 @@
     <title>Sawa | سوا ❤️</title>
     
     <meta name="description" content="Sawa - ألعاب زوجية ممتعة لقضاء وقت مميز وتحديات شيقة">
-    
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn-icons-png.flaticon.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff85a2">
 
@@ -23,55 +21,62 @@
             --dos-text: #541010;
         }
         
-        /* تحسين الانسيابية ومنع الـ Scroll العشوائي */
         body { 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
             margin: 0; 
             background: var(--bg); 
             display: flex; 
             flex-direction: column; 
-            height: 100vh; 
-            transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            height: 100dvh; /* استخدام الطول الديناميكي للموبايل */
+            transition: background-color 0.8s ease; 
             overflow: hidden; 
             touch-action: manipulation;
         }
         
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
 
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box; position: absolute; }
-        #lobby { display: flex; }
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
+        #lobby { display: flex; justify-content: center; }
 
         .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
-        .game-card:active { transform: scale(0.95); }
+        
+        /* الهيدر الجديد */
+        .header-area { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
+        .exit-btn { 
+            background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); 
+            color: white; width: 35px; height: 35px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; font-size: 1rem; transition: 0.2s; 
+        }
 
-        #score-board { display: none; justify-content: center; gap: 15px; margin-bottom: 20px; width: 100%; }
-        .score-box { flex: 1; max-width: 120px; padding: 10px; border-radius: 15px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .score-val { font-size: 1.5rem; display: block; }
+        #score-board { display: none; justify-content: center; gap: 10px; flex-grow: 1; }
+        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; }
+        .score-val { font-size: 1.2rem; display: block; }
 
-        #display-card { background: white; padding: 35px 25px; border-radius: 25px; width: 85%; max-width: 350px; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; border: 8px solid #333; margin-bottom: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 1.5; transition: 0.4s; }
+        /* الكارت المرن */
+        #display-card { 
+            background: white; padding: 25px; border-radius: 25px; 
+            width: 85%; max-width: 350px; flex-grow: 1; 
+            max-height: 45vh; margin: 20px 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            line-height: 1.5; transition: 0.4s; overflow-y: auto;
+        }
 
-        /* ستايل كارت دوس المطور */
         #display-card.dos-mode { 
-            background: linear-gradient(45deg, #ffc107, #ffeb3b); 
-            border: 8px solid #ff9800;
-            color: var(--dos-text);
-            box-shadow: 0 0 30px #ff9800;
-            transform: scale(1.05);
-            animation: pulse 1.5s infinite;
+            background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text);
+            animation: pulse 1.5s infinite; transform: scale(1.02);
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px #ff9800; }
-            50% { box-shadow: 0 0 40px #ff5722; }
-            100% { box-shadow: 0 0 20px #ff9800; }
-        }
+        @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
 
-        .btn-group { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
-        .action-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s; }
+        /* منطقة الأزرار في القاع */
+        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .btn-group { display: none; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
-        .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; transition: 0.3s; }
-        .main-btn:active { transform: scale(0.98); }
-        
+        .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; }
         .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
         .fade-in { animation: fadeIn 0.5s ease-out; }
@@ -86,45 +91,50 @@
     </div>
 
     <div id="lobby" class="screen">
-        <h1 style="margin-bottom: 30px; font-size: 2.2rem; color: #333;">اختر عالمنا الليلة</h1>
-        <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+        <h1 style="margin-bottom: 20px; font-size: 2rem; color: #333;">اختر عالمنا الليلة</h1>
+        <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;"></div>
     </div>
 
     <div id="rules-screen" class="screen">
-        <div class="fade-in" style="background:white; padding:35px; border-radius:30px; text-align:center; width:85%; max-width:400px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-            <h2 id="rules-title" style="font-size: 1.8rem; margin-top: 0;"></h2>
-            <p id="rules-text" style="font-size:1.15rem; color:#444; margin:25px 0; line-height:1.7;"></p>
-            <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">يلا بينا! 🚀</button>
-            <div style="margin-top: 20px;">
-                <button onclick="location.reload()" style="background:none; border:none; color:#888; text-decoration: underline; cursor:pointer;">رجوع للقائمة</button>
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+            <div class="fade-in" style="background:white; padding:30px; border-radius:30px; text-align:center; width:85%; max-width:400px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
+                <h2 id="rules-title" style="font-size: 1.8rem; margin-top: 0;"></h2>
+                <p id="rules-text" style="font-size:1.1rem; color:#444; margin:20px 0; line-height:1.6;"></p>
+                <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">يلا بينا! 🚀</button>
+                <div style="margin-top: 15px;"><button onclick="location.reload()" style="background:none; border:none; color:#888; text-decoration: underline;">رجوع</button></div>
             </div>
         </div>
     </div>
 
     <div id="game-screen" class="screen">
-        <div id="score-board">
-            <div id="w-box" class="score-box" style="background:var(--wife-color)">الزوجة <span id="w-score" class="score-val">0</span></div>
-            <div id="h-box" class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score" class="score-val">0</span></div>
+        <div class="header-area">
+            <div style="width: 35px;"></div> 
+            <div id="score-board">
+                <div id="w-box" class="score-box" style="background:var(--wife-color)">الزوجة <span id="w-score" class="score-val">0</span></div>
+                <div id="h-box" class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score" class="score-val">0</span></div>
+            </div>
+            <button class="exit-btn" onclick="location.reload()">✕</button>
         </div>
 
         <div id="display-card" class="fade-in">العبوا حجر ورقة مقص!</div>
 
-        <div id="challenge-group" class="btn-group">
-            <p id="challenge-instruction" style="color:white; text-align:center; font-weight:bold; font-size: 1.1rem; margin-bottom: 15px;">مين اللي كسب في التحدي؟</p>
-            <button class="action-btn" style="background:var(--wife-color)" onclick="applyCard('wife')">الزوجة 🌸</button>
-            <button class="action-btn" style="background:var(--husband-color)" onclick="applyCard('husband')">الزوج 💙</button>
+        <div class="controls-area">
+            <div id="challenge-group" class="btn-group">
+                <p style="color:white; text-align:center; font-weight:bold; margin:0 0 10px 0;">مين اللي كسب في التحدي؟</p>
+                <div style="display:flex; gap:10px; width:100%;">
+                    <button class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">الزوجة 🌸</button>
+                    <button class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">الزوج 💙</button>
+                </div>
+            </div>
+
+            <div id="scoring-group" class="btn-group">
+                <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">جاوب صح (+1) ✅</button>
+                <button class="action-btn" style="background:#f44336" onclick="confirmPoint(-2)">انسحب (-2) ❌</button>
+            </div>
+
+            <button id="next-btn" class="next-btn fade-in" onclick="resetToChallenge()">التالي ⮕</button>
+            <div id="progress" style="color:rgba(255,255,255,0.7); font-size:0.8rem;"></div>
         </div>
-
-        <div id="scoring-group" class="btn-group">
-            <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">جاوب صح (+1) ✅</button>
-            <button class="action-btn" style="background:#f44336" onclick="confirmPoint(-2)">انسحب (-2) ❌</button>
-        </div>
-
-        <button id="next-btn" class="next-btn fade-in" onclick="resetToChallenge()">التالي ⮕</button>
-
-        <button onclick="location.reload()" style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.4); color:white; margin-top:40px; padding:10px 25px; border-radius:15px; font-size:0.9rem; cursor:pointer;">إنهاء الجولة 🔄</button>
-        
-        <div id="progress" style="margin-top:20px; color:rgba(255,255,255,0.9); font-size:0.95rem; font-weight:bold; letter-spacing: 1px;"></div>
     </div>
 
     <script src="gamesData.js"></script>
@@ -133,9 +143,7 @@
         let usedIndices = [];
         let scores = { wife: 0, husband: 0 };
         let activePlayer = null;
-        let isDosActive = false;
 
-        // تهيئة قائمة الألعاب من البيانات
         const gameList = document.getElementById('game-list');
         if(typeof allGames !== 'undefined') {
             Object.values(allGames).forEach(game => {
@@ -167,7 +175,6 @@
         }
 
         function resetToChallenge() {
-            isDosActive = false;
             document.getElementById('display-card').classList.remove('dos-mode');
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
@@ -190,9 +197,7 @@
             }
 
             if (usedIndices.length === currentGame.questions.length) {
-                alert("انتهت جميع الكروت في هذا العالم! جرب عالماً آخر."); 
-                location.reload(); 
-                return;
+                alert("انتهت الكروت!"); location.reload(); return;
             }
 
             let idx;
@@ -207,10 +212,7 @@
             if (currentGame.hasScore) {
                 document.getElementById('scoring-group').style.display = 'flex';
             } else {
-                if (currentGame.id === 'boss_dos') {
-                    scores[player]++;
-                    updateScoreUI();
-                }
+                if (currentGame.id === 'boss_dos') { scores[player]++; updateScoreUI(); }
                 document.getElementById('next-btn').style.display = 'block';
             }
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
@@ -218,18 +220,15 @@
         }
 
         function triggerDos(player) {
-            isDosActive = true;
             activePlayer = player;
             scores[player] -= 6;
             updateScoreUI();
-
             const dosList = currentGame.dosQuestions || ["تحدي دوس عشوائي!"];
             const randomDos = dosList[Math.floor(Math.random() * dosList.length)];
-
             document.body.style.backgroundColor = "var(--dos-gold)";
             const card = document.getElementById('display-card');
             card.classList.add('dos-mode');
-            card.innerHTML = `${randomDos}`;            
+            card.innerHTML = `<div style="font-size:0.8rem; opacity:0.8; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div><div>${randomDos}</div>`;            
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
@@ -249,29 +248,17 @@
         }
 
         function checkAuth() {
-            const pass = prompt("من فضلك أدخل كلمة السر للدخول:");
+            const pass = prompt("كلمة السر:");
             if (pass === "3042023") {
                 document.getElementById('auth-overlay').style.display = 'none';
                 sessionStorage.setItem('isAuthorized', 'true');
-            } else if (pass !== null) {
-                alert("كلمة السر غير صحيحة.");
             }
         }
 
-        // تسجيل الـ Service Worker لتمكين الـ PWA
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => {
-                    console.log('SW Registered!', reg);
-                }).catch(err => console.log('SW Error:', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
         }
-
-        window.onload = () => { 
-            if(sessionStorage.getItem('isAuthorized') === 'true') {
-                document.getElementById('auth-overlay').style.display = 'none';
-            }
-        };
+        window.onload = () => { if(sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
     </script>
 </body>
 </html>
