@@ -4,81 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Sawa | سوا ❤️</title>
-    <meta name="description" content="سوا - اللعبة الزوجية الأكثر إثارة وتحدياً لقضاء وقت ممتع">
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#e63946">
+    <style>
+        :root { 
+            --bg: #0b0b0b; /* خلفية سوداء فخمة */
+            --wife-color: #ff85a2;
+            --husband-color: #4a90e2;
+            --neutral-dark: #1a1a1a;
+            --dos-gold: #ffc107;
+            --dos-text: #541010;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; background: var(--bg); 
+            display: flex; flex-direction: column; 
+            height: 100dvh; transition: background-color 0.8s ease; 
+            overflow: hidden; touch-action: manipulation;
+            color: white; 
+        }
+        
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="لهاليبو">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
-    
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: flex-start; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
+        
+        #lobby { background-color: var(--bg); display: flex; overflow-y: auto; padding-bottom: 40px; }
 
-<style>
-    :root { 
-        --bg: #0b0b0b; /* خلفية سوداء فخمة */
-        --wife-color: #ff85a2;
-        --husband-color: #4a90e2;
-        --neutral-dark: #1a1a1a;
-        --dos-gold: #ffc107;
-        --dos-text: #541010;
-    }
-    
-    body { 
-        font-family: 'Segoe UI', Tahoma, sans-serif; 
-        margin: 0; background: var(--bg); 
-        display: flex; flex-direction: column; 
-        height: 100dvh; transition: background-color 0.8s ease; 
-        overflow: hidden; touch-action: manipulation;
-        color: white; /* نص أبيض افتراضي */
-    }
-    
-    #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+        @keyframes rotateDice {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .random-dice {
+            background: none; border: none; font-size: 2.2rem; cursor: pointer;
+            animation: rotateDice 5s infinite linear;
+            filter: drop-shadow(0 0 8px var(--wife-color));
+        }
 
-    .screen { display: none; flex-direction: column; align-items: center; justify-content: flex-start; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
-    
-    #lobby { background-color: var(--bg); display: flex; overflow-y: auto; padding-bottom: 40px; }
+        .game-card { 
+            width: 90%; max-width: 400px; padding: 25px; margin: 12px 0; 
+            border-radius: 20px; color: white !important; font-size: 1.4rem; 
+            font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s; 
+            text-align: center;
+        }
+        .game-card:active { transform: scale(0.95); }
+        
+        #display-card { 
+            background: white; padding: 25px; border-radius: 25px; 
+            width: 85%; max-width: 350px; flex-grow: 1; 
+            max-height: 45vh; margin: 20px 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
+            color: #222; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+            line-height: 1.5; transition: 0.4s; overflow-y: auto;
+        }
 
-    /* ستايل النرد */
-    @keyframes rotateDice {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    .random-dice {
-        background: none; border: none; font-size: 2.2rem; cursor: pointer;
-        animation: rotateDice 5s infinite linear;
-        filter: drop-shadow(0 0 8px var(--wife-color));
-    }
+        #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
 
-    /* ستايل الكروت الملونة */
-    .game-card { 
-        width: 90%; max-width: 400px; padding: 25px; margin: 12px 0; 
-        border-radius: 20px; color: white !important; font-size: 1.4rem; 
-        font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s; 
-        text-align: center;
-    }
-    .game-card:active { transform: scale(0.95); }
-    
-    #display-card { 
-        background: white; padding: 25px; border-radius: 25px; 
-        width: 85%; max-width: 350px; flex-grow: 1; 
-        max-height: 45vh; margin: 20px 0;
-        display: flex; flex-direction: column; align-items: center; justify-content: center; 
-        font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
-        color: #222; /* نص السؤال أسود عشان يبان ع الكارت الأبيض */
-        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
-        line-height: 1.5; transition: 0.4s; overflow-y: auto;
-    }
+        .header-area { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
+        .exit-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
 
-    #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
+        #score-board { display: none; justify-content: center; gap: 10px; flex-grow: 1; }
+        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; }
+        
+        .level-selection { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
+        .level-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
 
-    .fade-in { animation: fadeIn 0.5s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .btn-group { display: none; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; }
+        .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; }
+        .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* تأثير الوميض للنرد */
+        .flash-effect { animation: flash 0.3s ease-out; }
+        @keyframes flash { 0% { background: #fff; } 100% { background: #0b0b0b; } }
+    </style>
 </head>
 <body>
 
@@ -87,20 +92,18 @@
         <button onclick="checkAuth()" class="main-btn" style="background:var(--wife-color);">دخول</button>
     </div>
 
-    <div id="lobby" class="screen">
-        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px;">
-            <h1 style="margin: 0; font-size: 2rem; color: #ffffff;">اختر لعبة الليلة</h1>
-            <button onclick="pickRandomGame()" style="background: none; border: none; font-size: 2.2rem; cursor: pointer; animation: rotate 4s infinite linear; filter: drop-shadow(0 0 8px #ff85a2);">
-                🎲
-            </button>
+    <div id="lobby" class="screen" style="display: flex;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0;">
+            <h1 style="margin: 0; font-size: 1.8rem; color: #ffffff;">اختر لعبة الليلة</h1>
+            <button class="random-dice" onclick="pickRandomGame()">🎲</button>
         </div>
-        <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;"></div>
+        <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
     </div>
 
     <div id="rules-screen" class="screen">
         <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
             <div class="fade-in" style="background:white; padding:30px; border-radius:30px; text-align:center; width:85%; max-width:400px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-                <h2 id="rules-title" style="font-size: 1.8rem;"></h2>
+                <h2 id="rules-title" style="font-size: 1.8rem; color:#222;"></h2>
                 <p id="rules-text" style="font-size:1.1rem; color:#444; margin:20px 0; line-height:1.6;"></p>
                 <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">يلا بينا! 🚀</button>
                 <div style="margin-top: 15px;"><button onclick="location.reload()" style="background:none; border:none; color:#888; text-decoration: underline;">رجوع</button></div>
@@ -117,29 +120,24 @@
             </div>
             <button class="exit-btn" onclick="location.reload()">✕</button>
         </div>
-
         <div id="display-card" class="fade-in">البداية..</div>
-
         <div id="level-selection" class="level-selection fade-in">
             <button class="level-btn" style="background:#4caf50" onclick="selectLevel('level1')">هادي (صراحة) 😊</button>
             <button class="level-btn" style="background:#ff9800" onclick="selectLevel('level2')">متوسط (جرأة) 😉</button>
             <button class="level-btn" style="background:#f44336" onclick="selectLevel('level3')">نار (لهاليبو) 🔥🔥🔥</button>
         </div>
-
         <div class="controls-area">
             <div id="challenge-group" class="btn-group">
                 <p id="challenge-txt" style="color:white; text-align:center; font-weight:bold; margin-bottom:5px;">مين اللي كسب؟</p>
-                <div id="action-btns-container" style="display:flex; gap:10px; width:100%;">
+                <div style="display:flex; gap:10px; width:100%;">
                     <button id="btn-wife" class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">الزوجة 🌸</button>
                     <button id="btn-husband" class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">الزوج 💙</button>
                 </div>
             </div>
-
             <div id="scoring-group" class="btn-group">
                 <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">جاوب صح (+1) ✅</button>
                 <button class="action-btn" style="background:#f44336" onclick="confirmPoint(-2)">انسحب (-2) ❌</button>
             </div>
-
             <button id="next-btn" class="next-btn fade-in" onclick="resetToChallenge()">التالي ⮕</button>
             <div id="progress" style="color:white; font-size:0.8rem; opacity:0.7;"></div>
         </div>
@@ -152,28 +150,46 @@
         let scores = { wife: 0, husband: 0 };
         let activePlayer = null;
         let currentLevel = null;
-        let nextTurn = 'wife'; // متغير جديد لتتبع الأدوار في اللعبة الرابعة
+        let nextTurn = 'wife';
 
-        const gameList = document.getElementById('game-list');
-        if(typeof allGames !== 'undefined') {
-            Object.values(allGames).forEach(game => {
-                const btn = document.createElement('button');
+        // دالة تشغيل أي لعبة (عشان نستخدمها في اللوبي وفي العشوائي)
+        function startGame(gameKey) {
+            const game = allGames[gameKey];
+            currentGame = game;
+            document.body.style.backgroundColor = game.color;
+            document.getElementById('rules-title').innerText = game.title;
+            document.getElementById('rules-text').innerText = game.rules;
+            document.getElementById('confirm-rules-btn').style.backgroundColor = game.accent;
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('rules-screen').style.display = 'flex';
+        }
+
+        // بناء اللوبي عند الفتح
+        function initLobby() {
+            const list = document.getElementById('game-list');
+            list.innerHTML = '';
+            Object.keys(allGames).forEach(key => {
+                const game = allGames[key];
+                const btn = document.createElement('div');
                 btn.className = 'game-card';
-                btn.style.backgroundColor = game.accent;
+                btn.style.background = game.accent; // استخدام الـ Gradient
                 btn.innerText = game.title;
-                btn.onclick = () => {
-                    currentGame = game;
-                    document.body.style.backgroundColor = game.color;
-                    document.getElementById('rules-title').innerText = game.title;
-                    document.getElementById('rules-text').innerText = game.rules;
-                    document.getElementById('confirm-rules-btn').style.backgroundColor = game.accent;
-                    document.getElementById('lobby').style.display = 'none';
-                    document.getElementById('rules-screen').style.display = 'flex';
-                };
-                gameList.appendChild(btn);
+                btn.onclick = () => startGame(key);
+                list.appendChild(btn);
             });
         }
 
+        function pickRandomGame() {
+            const keys = Object.keys(allGames);
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            document.body.classList.add('flash-effect');
+            setTimeout(() => {
+                document.body.classList.remove('flash-effect');
+                startGame(randomKey);
+            }, 300);
+        }
+
+        // ... (باقي دوال اللعبة startActualGame, applyCard, الخ تظل كما هي) ...
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
@@ -182,29 +198,11 @@
             resetToChallenge();
         }
 
-        function pickRandomGame() {
-            // نجيب كل مفاتيح الألعاب (lehalibo, boss_dos, etc.)
-            const gameKeys = Object.keys(allGames);
-            // نختار واحد عشوائي
-            const randomKey = gameKeys[Math.floor(Math.random() * gameKeys.length)];
-            
-            // تأثير بصري خفيف قبل الدخول
-            document.body.classList.add('flash-effect');
-            
-            setTimeout(() => {
-                document.body.classList.remove('flash-effect');
-                // بدأ اللعبة العشوائية
-                startGame(randomKey);
-            }, 300);
-        }
-
         function resetToChallenge() {
             document.getElementById('display-card').classList.remove('dos-mode');
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
-            
-            // إعادة تعيين أسماء الزراير للأصل (عشان لو رجعنا من لعبة الأوضاع)
             document.getElementById('btn-wife').innerText = "الزوجة 🌸";
             document.getElementById('btn-husband').innerText = "الزوج 💙";
             
@@ -214,102 +212,40 @@
                 document.getElementById('level-selection').style.display = 'flex';
                 return;
             }
-        
             document.getElementById('challenge-group').style.display = 'flex';
             document.body.style.backgroundColor = "var(--neutral-dark)";
             
-            // 1. منطق لعبة الأوضاع الجنسية (زرار واحد عشوائي)
             if (currentGame.id === 'positions_game') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "جاهزين للتغيير؟";
                 document.getElementById('display-card').innerText = "دوس وشوف حظكم في وضع إيه النهاردة! 🎲";
-                
-                document.getElementById('btn-wife').style.display = 'block';
-                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲"; // تغيير نص الزرار
-                document.getElementById('btn-husband').style.display = 'none'; // إخفاء زرار الزوج
-            } 
-            // 2. منطق الألعاب اللي بالتبادل (شوق أو دوق و سلم الشوق)
-            else if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
+                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲";
+                document.getElementById('btn-husband').style.display = 'none';
+            } else if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "الدور الآن على:";
-                
                 document.getElementById('btn-wife').style.display = (nextTurn === 'wife') ? 'block' : 'none';
                 document.getElementById('btn-husband').style.display = (nextTurn === 'husband') ? 'block' : 'none';
-                
                 document.getElementById('display-card').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
-            } 
-            // 3. باقي الألعاب (حجر ورقة مقص)
-            else {
+            } else {
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
-                document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
-                
-                if (currentGame.id === 'lehalibo') {
-                    document.getElementById('display-card').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
-                    document.getElementById('score-board').style.display = 'flex';
-                } else {
-                    document.getElementById('display-card').innerText = "✌️ حجر ورقة مقص.. مين اللي كسب؟";
-                    document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
-                }
+                document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos' || currentGame.id === 'lehalibo') ? 'flex' : 'none';
             }
-        }
-        function selectLevel(lvl) {
-            currentLevel = lvl;
-            usedIndices = []; // تصغير الفهرس عند تغيير المستوى
-            document.getElementById('level-selection').style.display = 'none';
-            resetToChallenge();
         }
 
         function applyCard(player) {
-            if (currentGame.id === 'boss_dos' && scores[player] >= 6) { 
-                triggerDos(player); 
-                return; 
-            }
-        
-            // التعديل الجوهري هنا: التأكد من سحب الكروت من المستويات أو من الأسئلة العادية
-            let pool;
-            if (currentGame.isMultiLevel) {
-                pool = currentGame.levels[currentLevel];
-            } else {
-                // لو مفيش questions (زي حالة بوس أو دوس أحياناً) يسحب من الأسئلة المتاحة
-                pool = currentGame.questions || currentGame.dosQuestions;
-            }
-        
-            if (!pool || usedIndices.length === pool.length) {
-                alert("انتهت الكروت في هذا المستوى!"); 
-                currentLevel = null; 
-                resetToChallenge(); 
-                return;
-            }
-        
-            let idx;
-            do { 
-                idx = Math.floor(Math.random() * pool.length); 
-            } while (usedIndices.includes(idx));
-            
-            usedIndices.push(idx);
-            activePlayer = player;
-            
+            if (currentGame.id === 'boss_dos' && scores[player] >= 6) { triggerDos(player); return; }
+            let pool = currentGame.isMultiLevel ? currentGame.levels[currentLevel] : (currentGame.questions || currentGame.dosQuestions);
+            if (!pool || usedIndices.length === pool.length) { alert("انتهت الكروت!"); location.reload(); return; }
+            let idx; do { idx = Math.floor(Math.random() * pool.length); } while (usedIndices.includes(idx));
+            usedIndices.push(idx); activePlayer = player;
             document.getElementById('display-card').innerText = pool[idx];
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
-        
-            if (currentGame.hasScore) {
-                document.getElementById('scoring-group').style.display = 'flex';
-            } else {
-                if (currentGame.id === 'boss_dos') { 
-                    scores[player]++; 
-                    updateScoreUI(); 
-                }
-                document.getElementById('next-btn').style.display = 'block';
-            }
-        
-            // تبديل الدور تلقائياً للعبة التالتة والرابعة
-            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
-                nextTurn = (player === 'wife') ? 'husband' : 'wife';
-            }
-        
-            document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${pool.length}`;
+            if (currentGame.hasScore) document.getElementById('scoring-group').style.display = 'flex';
+            else { if (currentGame.id === 'boss_dos') { scores[player]++; updateScoreUI(); } document.getElementById('next-btn').style.display = 'block'; }
+            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') nextTurn = (player === 'wife') ? 'husband' : 'wife';
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
@@ -325,19 +261,15 @@
         }
 
         function confirmPoint(pts) { scores[activePlayer] += pts; updateScoreUI(); resetToChallenge(); }
-
-        function updateScoreUI() {
-            document.getElementById('w-score').innerText = scores.wife;
-            document.getElementById('h-score').innerText = scores.husband;
-        }
-
-        function checkAuth() {
-            if (prompt("كلمة السر:") === "3042023") {
+        function updateScoreUI() { document.getElementById('w-score').innerText = scores.wife; document.getElementById('h-score').innerText = scores.husband; }
+        function checkAuth() { if (prompt("كلمة السر:") === "3042023") { document.getElementById('auth-overlay').style.display = 'none'; sessionStorage.setItem('isAuthorized', 'true'); initLobby(); } }
+        
+        window.onload = () => { 
+            if(sessionStorage.getItem('isAuthorized') === 'true') {
                 document.getElementById('auth-overlay').style.display = 'none';
-                sessionStorage.setItem('isAuthorized', 'true');
+                initLobby();
             }
-        }
-        window.onload = () => { if(sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
+        };
     </script>
 </body>
 </html>
