@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Sawa | سوا ❤️</title>
-    <meta name="description" content="سوا - اللعبة الزوجية الأكثر إثارة وتحدياً لقضاء وقت ممتع">
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#e63946">
-
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="لهاليبو">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
-    
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
 
     <style>
@@ -55,11 +50,26 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
             text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            line-height: 1.5; transition: 0.4s; overflow-y: auto;
+            line-height: 1.5; transition: 0.4s; position: relative;
         }
 
         #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
+        
+        /* شكل العداد الجديد */
+        #timer-display { 
+            display: none; 
+            background: #f44336; 
+            color: white; 
+            width: 60px; height: 60px; 
+            border-radius: 50%; 
+            line-height: 60px; 
+            text-align: center; 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
+            border: 3px solid #fff;
+        }
 
         .level-selection { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
         .level-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
@@ -71,9 +81,6 @@
         .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* تنسيق المؤقت */
-        #timer-display { display: none; color: #f44336; font-size: 2.2rem; margin-bottom: 10px; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -279,11 +286,15 @@
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
         
-            // فحص المؤقت
+            // فحص المؤقت التلقائي
             const timerDisp = document.getElementById('timer-display');
-            if (question.includes("مدة")) {
+            if (question.includes("مدة") || question.includes("ثانية")) {
+                // استخراج الرقم من النص (مثلاً: "لمدة 30 ثانية" -> يطلع 30)
+                const matchedSeconds = question.match(/\d+/); 
+                const secondsToSet = matchedSeconds ? parseInt(matchedSeconds[0]) : 60;
+                
                 timerDisp.style.display = 'block';
-                startTimer(60);
+                startTimer(secondsToSet);
             } else {
                 timerDisp.style.display = 'none';
             }
@@ -316,7 +327,7 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     display.innerText = "⏰";
-                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
                 }
             }, 1000);
         }
