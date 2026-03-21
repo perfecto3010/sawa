@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Sawa | سوا ❤️</title>
+    <meta name="description" content="سوا - اللعبة الزوجية الأكثر إثارة وتحدياً لقضاء وقت ممتع">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff85a2">
+
     <style>
         :root { 
             --bg: #f8f9fa; 
@@ -18,7 +22,7 @@
             font-family: 'Segoe UI', Tahoma, sans-serif; 
             margin: 0; background: var(--bg); 
             display: flex; flex-direction: column; 
-            height: 100dvh; transition: background-color 0.6s ease; 
+            height: 100dvh; transition: background-color 0.8s ease; 
             overflow: hidden; touch-action: manipulation;
         }
         
@@ -33,7 +37,8 @@
         .exit-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
 
         #score-board { display: none; justify-content: center; gap: 10px; flex-grow: 1; }
-        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; }
+        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .score-val { font-size: 1.2rem; display: block; }
 
         #display-card { 
             background: white; padding: 25px; border-radius: 25px; 
@@ -51,12 +56,11 @@
         .level-selection { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
         .level-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
 
-        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
         .btn-group { display: none; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
-        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; }
         .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; }
-        .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; cursor: pointer; }
-
+        .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
         .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -76,7 +80,7 @@
     <div id="rules-screen" class="screen">
         <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
             <div class="fade-in" style="background:white; padding:30px; border-radius:30px; text-align:center; width:85%; max-width:400px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-                <h2 id="rules-title" style="font-size: 1.8rem; margin:0;"></h2>
+                <h2 id="rules-title" style="font-size: 1.8rem;"></h2>
                 <p id="rules-text" style="font-size:1.1rem; color:#444; margin:20px 0; line-height:1.6;"></p>
                 <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">يلا بينا! 🚀</button>
                 <div style="margin-top: 15px;"><button onclick="location.reload()" style="background:none; border:none; color:#888; text-decoration: underline;">رجوع</button></div>
@@ -88,13 +92,13 @@
         <div class="header-area">
             <div style="width: 35px;"></div> 
             <div id="score-board">
-                <div id="w-box" class="score-box" style="background:var(--wife-color)">الزوجة <span id="w-score">0</span></div>
-                <div id="h-box" class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score">0</span></div>
+                <div id="w-box" class="score-box" style="background:var(--wife-color)">الزوجة <span id="w-score" class="score-val">0</span></div>
+                <div id="h-box" class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score" class="score-val">0</span></div>
             </div>
             <button class="exit-btn" onclick="location.reload()">✕</button>
         </div>
 
-        <div id="display-card" class="fade-in">جاهزين؟</div>
+        <div id="display-card" class="fade-in">البداية..</div>
 
         <div id="level-selection" class="level-selection fade-in">
             <button class="level-btn" style="background:#4caf50" onclick="selectLevel('level1')">هادي (صراحة) 😊</button>
@@ -104,16 +108,16 @@
 
         <div class="controls-area">
             <div id="challenge-group" class="btn-group">
-                <p id="turn-indicator" style="color:white; text-align:center; font-weight:bold; margin-bottom:10px;"></p>
-                <div id="player-btns" style="display:flex; gap:10px; width:100%;">
-                    <button id="wife-btn" class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">سؤال للجميلة 🌸</button>
-                    <button id="husband-btn" class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">سؤال للبطل 💙</button>
+                <p id="challenge-txt" style="color:white; text-align:center; font-weight:bold; margin-bottom:5px;">مين اللي كسب؟</p>
+                <div style="display:flex; gap:10px; width:100%;">
+                    <button class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">الزوجة 🌸</button>
+                    <button class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">الزوج 💙</button>
                 </div>
             </div>
 
             <div id="scoring-group" class="btn-group">
-                <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">تم بنجاح ✅</button>
-                <button class="action-btn" style="background:#f44336" onclick="confirmPoint(0)">تخطي ❌</button>
+                <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">جاوب صح (+1) ✅</button>
+                <button class="action-btn" style="background:#f44336" onclick="confirmPoint(-2)">انسحب (-2) ❌</button>
             </div>
 
             <button id="next-btn" class="next-btn fade-in" onclick="resetToChallenge()">التالي ⮕</button>
@@ -128,9 +132,7 @@
         let scores = { wife: 0, husband: 0 };
         let activePlayer = null;
         let currentLevel = null;
-        let nextTurn = 'wife'; // تتبع الأدوار تلقائياً
 
-        // 1. بناء قائمة الألعاب
         const gameList = document.getElementById('game-list');
         if(typeof allGames !== 'undefined') {
             Object.values(allGames).forEach(game => {
@@ -151,61 +153,50 @@
             });
         }
 
-        // 2. بدء اللعبة
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
-            usedIndices = []; scores = { wife: 0, husband: 0 }; currentLevel = null; nextTurn = 'wife';
+            usedIndices = []; scores = { wife: 0, husband: 0 }; currentLevel = null;
             updateScoreUI();
             resetToChallenge();
         }
 
-        // 3. العودة لحالة التحدي/الانتظار
         function resetToChallenge() {
             document.getElementById('display-card').classList.remove('dos-mode');
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
-            document.getElementById('challenge-group').style.display = 'flex';
-            document.body.style.backgroundColor = "var(--neutral-dark)";
             
-            // حالة المستويات (درجات اللهلوبة)
             if (currentGame.isMultiLevel && !currentLevel) {
-                document.getElementById('display-card').innerText = "اختاروا حرارة الليلة 🔥";
+                document.getElementById('display-card').innerText = "اختر درجة الحرارة 🔥";
                 document.getElementById('challenge-group').style.display = 'none';
                 document.getElementById('level-selection').style.display = 'flex';
                 return;
             }
 
-            // تخصيص الأزرار بناءً على نوع اللعبة (تبادلية أم حجر ورقة مقص)
-            if (currentGame.isTurnBased) {
-                document.getElementById('turn-indicator').innerText = "الدور الآن على:";
-                document.getElementById('wife-btn').style.display = (nextTurn === 'wife') ? 'block' : 'none';
-                document.getElementById('husband-btn').style.display = (nextTurn === 'husband') ? 'block' : 'none';
-                document.getElementById('display-card').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. جاهزة؟ 🌸" : "سؤال للزوج.. جاهز؟ 💙";
-                document.getElementById('score-board').style.display = 'none';
+            document.getElementById('challenge-group').style.display = 'flex';
+            document.body.style.backgroundColor = "var(--neutral-dark)";
+            
+            if (currentGame.id === 'lehalibo') {
+                document.getElementById('display-card').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
+                document.getElementById('score-board').style.display = 'flex';
             } else {
-                document.getElementById('turn-indicator').innerText = "مين اللي كسب التحدي؟";
-                document.getElementById('wife-btn').style.display = 'block';
-                document.getElementById('husband-btn').style.display = 'block';
-                document.getElementById('display-card').innerText = (currentGame.id === 'lehalibo') ? "👀 تحدي نظرات.." : "✌️ حجر ورقة مقص..";
-                document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos' || currentGame.id === 'lehalibo') ? 'flex' : 'none';
+                document.getElementById('display-card').innerText = "✌️ حجر ورقة مقص.. مين اللي كسب؟";
+                document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
             }
         }
 
-        // 4. اختيار المستوى
         function selectLevel(lvl) {
             currentLevel = lvl; usedIndices = []; resetToChallenge();
         }
 
-        // 5. سحب الكارت وتغيير الخلفية
         function applyCard(player) {
             if (currentGame.id === 'boss_dos' && scores[player] >= 6) { triggerDos(player); return; }
 
             let pool = currentGame.isMultiLevel ? currentGame.levels[currentLevel] : currentGame.questions;
 
             if (usedIndices.length === pool.length) {
-                alert("خلصتوا المستوى ده! تقدروا تختاروا غيره."); currentLevel = null; resetToChallenge(); return;
+                alert("انتهت الكروت!"); currentLevel = null; resetToChallenge(); return;
             }
 
             let idx;
@@ -214,9 +205,7 @@
             
             activePlayer = player;
             document.getElementById('display-card').innerText = pool[idx];
-            
-            // تغيير لون الخلفية حسب اللاعب: بينك للزوجة، أزرق للزوج
-            document.body.style.backgroundColor = (player === 'wife') ? "var(--wife-color)" : "var(--husband-color)";
+            document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
 
             if (currentGame.hasScore) {
@@ -225,23 +214,17 @@
                 if (currentGame.id === 'boss_dos') { scores[player]++; updateScoreUI(); }
                 document.getElementById('next-btn').style.display = 'block';
             }
-            
-            // تبديل الدور للقادم
-            nextTurn = (player === 'wife') ? 'husband' : 'wife';
-            
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${pool.length}`;
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
-        // 6. تحدي الدوس (بوس أو دوس)
         function triggerDos(player) {
             scores[player] -= 6; updateScoreUI();
-            const dosList = currentGame.dosQuestions;
-            const randomDos = dosList[Math.floor(Math.random() * dosList.length)];
+            const dos = currentGame.dosQuestions[Math.floor(Math.random() * currentGame.dosQuestions.length)];
             document.body.style.backgroundColor = "var(--dos-gold)";
             const card = document.getElementById('display-card');
             card.classList.add('dos-mode');
-            card.innerHTML = `<div style="font-size:0.9rem; opacity:0.8;">🔥 تحدي دوس إجباري 🔥</div><div style="margin-top:10px;">${randomDos}</div>`;
+            card.innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${dos}`;
             document.getElementById('challenge-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'block';
         }
