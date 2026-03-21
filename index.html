@@ -6,8 +6,13 @@
     <title>Sawa | سوا</title>
     <link rel="manifest" href="manifest.json">
     <style>
-        :root { --bg: #f8f9fa; --card-white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; transition: 0.5s; overflow: hidden; }
+        :root { 
+            --bg: #f8f9fa; 
+            --card-white: #ffffff;
+            --wife-color: #ff85a2;
+            --husband-color: #4a90e2;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; transition: background-color 0.8s ease; overflow: hidden; }
         
         /* Auth Overlay */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
@@ -15,31 +20,38 @@
 
         /* Screens Logic */
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; padding: 20px; box-sizing: border-box; position: absolute; top: 0; left: 0; }
-        #lobby { display: flex; } /* الشاشة الافتراضية */
+        #lobby { display: flex; }
 
         /* Lobby Styles */
-        #lobby { text-align: center; }
         .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
         .game-card:active { transform: scale(0.95); }
 
-        /* Rules Screen (New Full Page Style) */
+        /* Rules Screen */
         #rules-screen { background: rgba(0,0,0,0.05); z-index: 100; }
         .rules-container { background: white; padding: 40px 25px; border-radius: 30px; width: 85%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
-        #rules-text { font-size: 1.3rem; line-height: 1.8; color: #444; margin: 25px 0; min-height: 100px; }
+        #rules-text { font-size: 1.3rem; line-height: 1.8; color: #444; margin: 25px 0; }
+
+        /* Score Board (Conditional) */
+        #score-board { display: none; justify-content: center; gap: 15px; margin-bottom: 20px; width: 100%; }
+        .score-box { flex: 1; max-width: 120px; padding: 10px; border-radius: 15px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; }
+        .score-val { font-size: 1.5rem; display: block; }
 
         /* Game Play Screen */
-        #turn-label { margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 15px; }
+        #turn-label { margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 15px; transition: 0.3s; }
         #display-card { background: white; padding: 35px 25px; border-radius: 25px; width: 85%; max-width: 350px; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: bold; border: 8px solid #333; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); line-height: 1.4; text-align: center; }
 
-        /* Timer UI */
+        /* Point Buttons */
+        #score-btns { display: none; gap: 10px; margin-bottom: 20px; width: 100%; max-width: 350px; }
+        .point-btn { flex: 1; padding: 12px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .plus { background: #4caf50; }
+        .minus { background: #f44336; }
+
+        /* Timer & Buttons */
         #timer-box { display: none; margin-bottom: 20px; flex-direction: column; align-items: center; }
         #time-circle { width: 60px; height: 60px; border-radius: 50%; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
-
-        /* Buttons */
         button.main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 250px; }
         .back-btn { margin-top: 20px; background: none; border: 1px solid rgba(255,255,255,0.8); color: white; padding: 8px 20px; border-radius: 10px; cursor: pointer; opacity: 0.8; }
         
-        /* Animations */
         .fade-in { animation: fadeIn 0.4s ease-in forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -63,15 +75,23 @@
             <h2 id="rules-title" style="margin-top: 0; font-size: 2rem;"></h2>
             <div id="rules-text"></div>
             <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">جاهزين.. نبدأ! 🚀</button>
-            <div style="margin-top: 15px;">
-                <a href="#" onclick="location.reload()" style="color: #888; text-decoration: none; font-size: 0.9rem;">رجوع للرئيسية</a>
-            </div>
+            <div style="margin-top: 15px;"><a href="#" onclick="location.reload()" style="color: #888; text-decoration: none; font-size: 0.9rem;">رجوع</a></div>
         </div>
     </div>
 
     <div id="game-screen" class="screen fade-in">
+        <div id="score-board">
+            <div class="score-box" style="background: var(--wife-color);">الزوجة <span id="w-score" class="score-val">0</span></div>
+            <div class="score-box" style="background: var(--husband-color);">الزوج <span id="h-score" class="score-val">0</span></div>
+        </div>
+
         <div id="turn-label"></div>
         <div id="display-card">جاهز؟</div>
+
+        <div id="score-btns">
+            <button class="point-btn plus" onclick="updatePoints(1)">إجابة (+1)</button>
+            <button class="point-btn minus" onclick="updatePoints(-2)">انسحاب (-2)</button>
+        </div>
         
         <div id="timer-box">
             <div id="time-circle">60</div>
@@ -89,6 +109,7 @@
         let usedIndices = [];
         let isWifeTurn = Math.random() < 0.5;
         let timerInterval;
+        let scores = { wife: 0, husband: 0 };
 
         // إنشاء قائمة الألعاب
         const gameList = document.getElementById('game-list');
@@ -101,27 +122,32 @@
             gameList.appendChild(btn);
         });
 
-        // 1. الانتقال لصفحة القواعد أولاً
         function showRules(gameId) {
             currentGame = allGames[gameId];
             usedIndices = [];
             
-            // تهيئة ألوان صفحة القواعد
+            // Automatic Reset Scores
+            scores = { wife: 0, husband: 0 };
+            document.getElementById('w-score').innerText = "0";
+            document.getElementById('h-score').innerText = "0";
+
             document.body.style.backgroundColor = currentGame.color;
             document.getElementById('rules-title').innerText = currentGame.title;
             document.getElementById('rules-title').style.color = currentGame.accent;
             document.getElementById('rules-text').innerText = currentGame.rules;
             document.getElementById('confirm-rules-btn').style.backgroundColor = currentGame.accent;
 
-            // إخفاء اللوبي وإظهار القواعد
             document.getElementById('lobby').style.display = 'none';
             document.getElementById('rules-screen').style.display = 'flex';
         }
 
-        // 2. الانتقال للعب الفعلي
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
+            
+            // تهيئة واجهة اللعبة حسب نوعها
+            document.getElementById('score-board').style.display = currentGame.hasScore ? 'flex' : 'none';
+            document.getElementById('score-btns').style.display = 'none';
             
             document.getElementById('draw-btn').style.backgroundColor = currentGame.accent;
             document.getElementById('display-card').style.borderColor = currentGame.accent;
@@ -146,6 +172,20 @@
             const q = currentGame.questions[idx];
             document.getElementById('display-card').innerText = q;
 
+            // تغيير الخلفية حسب الدور
+            if (isWifeTurn) {
+                document.body.style.backgroundColor = "var(--wife-color)";
+                document.getElementById('turn-label').innerText = "دور الزوجة 🌸";
+            } else {
+                document.body.style.backgroundColor = "var(--husband-color)";
+                document.getElementById('turn-label').innerText = "دور الزوج 💙";
+            }
+
+            // إظهار أزرار النقاط في لهاليبو فقط
+            if (currentGame.hasScore) {
+                document.getElementById('score-btns').style.display = 'flex';
+            }
+
             // Timer Logic
             if (q.includes("(مؤقت)") && currentGame.timerDuration > 0) {
                 document.getElementById('timer-box').style.display = 'flex';
@@ -155,9 +195,21 @@
             }
 
             isWifeTurn = !isWifeTurn;
-            document.getElementById('turn-label').innerText = isWifeTurn ? "دور الزوجة 🌸" : "دور الزوج 💙";
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
             if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function updatePoints(pts) {
+            // بما إن isWifeTurn بتتعكس "بعد" السحب، فاللي جاوب هو عكس الحالة الحالية
+            if (!isWifeTurn) { 
+                scores.wife += pts;
+                document.getElementById('w-score').innerText = scores.wife;
+            } else {
+                scores.husband += pts;
+                document.getElementById('h-score').innerText = scores.husband;
+            }
+            document.getElementById('score-btns').style.display = 'none';
+            if (navigator.vibrate) navigator.vibrate(pts > 0 ? 100 : [50, 50, 50]);
         }
 
         function startTimer() {
@@ -179,7 +231,6 @@
             document.getElementById('timer-btn').style.display = 'block';
         }
 
-        // Auth Logic
         function checkAuth() {
             const CORRECT_PASSWORD = "3042023"; 
             const password = prompt("من فضلك أدخل كلمة السر للدخول:");
@@ -196,10 +247,6 @@
                 document.getElementById('auth-overlay').style.display = 'none';
             }
         };
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
     </script>
 </body>
 </html>
