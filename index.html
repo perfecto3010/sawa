@@ -147,6 +147,32 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
+
+        function checkAuth() {
+            const savedAuth = sessionStorage.getItem('isAuthorized');
+            
+            if (savedAuth !== 'true') {
+                const password = prompt(" من فضلك أدخل كلمة السر:");
+                
+                if (password === "3042023") { 
+                    sessionStorage.setItem('isAuthorized', 'true');
+                    alert("أهلاً بكما في عالمكما الخاص ❤️");
+                } else {
+                    alert("كلمة سر خاطئة!");
+                    document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>عذراً، لا يمكن الدخول بدون كلمة السر.</h1>";
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // استدعاء الدالة أول ما الصفحة تحمل
+        window.onload = function() {
+            if (checkAuth()) {
+                // لو الباسورد صح، ابدأ اللعبة عادي
+                console.log("Authorized");
+            }
+        };
     </script>
 </body>
 </html>
