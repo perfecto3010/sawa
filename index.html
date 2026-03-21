@@ -16,62 +16,69 @@
     
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
 
-    <style>
-        :root { 
-            --bg: #f8f9fa; 
-            --wife-color: #ff85a2;
-            --husband-color: #4a90e2;
-            --neutral-dark: #1a1a1a;
-            --dos-gold: #ffc107;
-            --dos-text: #541010;
-        }
-        
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; background: var(--bg); 
-            display: flex; flex-direction: column; 
-            height: 100dvh; transition: background-color 0.8s ease; 
-            overflow: hidden; touch-action: manipulation;
-        }
-        
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+<style>
+    :root { 
+        --bg: #0b0b0b; /* خلفية سوداء فخمة */
+        --wife-color: #ff85a2;
+        --husband-color: #4a90e2;
+        --neutral-dark: #1a1a1a;
+        --dos-gold: #ffc107;
+        --dos-text: #541010;
+    }
+    
+    body { 
+        font-family: 'Segoe UI', Tahoma, sans-serif; 
+        margin: 0; background: var(--bg); 
+        display: flex; flex-direction: column; 
+        height: 100dvh; transition: background-color 0.8s ease; 
+        overflow: hidden; touch-action: manipulation;
+        color: white; /* نص أبيض افتراضي */
+    }
+    
+    #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
 
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
-        #lobby {background-color: #0f0f0f; display: flex; justify-content: center; }
+    .screen { display: none; flex-direction: column; align-items: center; justify-content: flex-start; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
+    
+    #lobby { background-color: var(--bg); display: flex; overflow-y: auto; padding-bottom: 40px; }
 
-        .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
-        
-        .header-area { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
-        .exit-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
+    /* ستايل النرد */
+    @keyframes rotateDice {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .random-dice {
+        background: none; border: none; font-size: 2.2rem; cursor: pointer;
+        animation: rotateDice 5s infinite linear;
+        filter: drop-shadow(0 0 8px var(--wife-color));
+    }
 
-        #score-board { display: none; justify-content: center; gap: 10px; flex-grow: 1; }
-        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .score-val { font-size: 1.2rem; display: block; }
+    /* ستايل الكروت الملونة */
+    .game-card { 
+        width: 90%; max-width: 400px; padding: 25px; margin: 12px 0; 
+        border-radius: 20px; color: white !important; font-size: 1.4rem; 
+        font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5); transition: 0.3s; 
+        text-align: center;
+    }
+    .game-card:active { transform: scale(0.95); }
+    
+    #display-card { 
+        background: white; padding: 25px; border-radius: 25px; 
+        width: 85%; max-width: 350px; flex-grow: 1; 
+        max-height: 45vh; margin: 20px 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
+        color: #222; /* نص السؤال أسود عشان يبان ع الكارت الأبيض */
+        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); 
+        line-height: 1.5; transition: 0.4s; overflow-y: auto;
+    }
 
-        #display-card { 
-            background: white; padding: 25px; border-radius: 25px; 
-            width: 85%; max-width: 350px; flex-grow: 1; 
-            max-height: 45vh; margin: 20px 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            line-height: 1.5; transition: 0.4s; overflow-y: auto;
-        }
+    #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
 
-        #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 20px #ff9800; } 50% { box-shadow: 0 0 40px #ff5722; } 100% { box-shadow: 0 0 20px #ff9800; } }
-
-        .level-selection { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
-        .level-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-
-        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .btn-group { display: none; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
-        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; }
-        .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; }
-        .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    .fade-in { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+</style>
 </head>
 <body>
 
@@ -81,7 +88,12 @@
     </div>
 
     <div id="lobby" class="screen">
-        <h1 style="margin-bottom: 20px; font-size: 2rem; color: #ffffff;">اختر لعبة الليلة</h1>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px;">
+            <h1 style="margin: 0; font-size: 2rem; color: #ffffff;">اختر لعبة الليلة</h1>
+            <button onclick="pickRandomGame()" style="background: none; border: none; font-size: 2.2rem; cursor: pointer; animation: rotate 4s infinite linear; filter: drop-shadow(0 0 8px #ff85a2);">
+                🎲
+            </button>
+        </div>
         <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;"></div>
     </div>
 
@@ -168,6 +180,22 @@
             usedIndices = []; scores = { wife: 0, husband: 0 }; currentLevel = null; nextTurn = 'wife';
             updateScoreUI();
             resetToChallenge();
+        }
+
+        function pickRandomGame() {
+            // نجيب كل مفاتيح الألعاب (lehalibo, boss_dos, etc.)
+            const gameKeys = Object.keys(allGames);
+            // نختار واحد عشوائي
+            const randomKey = gameKeys[Math.floor(Math.random() * gameKeys.length)];
+            
+            // تأثير بصري خفيف قبل الدخول
+            document.body.classList.add('flash-effect');
+            
+            setTimeout(() => {
+                document.body.classList.remove('flash-effect');
+                // بدأ اللعبة العشوائية
+                startGame(randomKey);
+            }, 300);
         }
 
         function resetToChallenge() {
