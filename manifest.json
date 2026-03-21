@@ -4,13 +4,20 @@
   "display": "standalone",
   "start_url": "./index.html",
   "theme_color": "#ff85a2",
-  "background_color": "#fce4ec",
+  "background_color": "#121212", 
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/833/833472.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/833/833472.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
