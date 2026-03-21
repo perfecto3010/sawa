@@ -225,6 +225,10 @@
                 sessionStorage.setItem('isAuthorized', 'true');
             }
         }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+          }
         window.onload = () => { if(sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
     </script>
 </body>
