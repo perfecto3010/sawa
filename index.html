@@ -167,7 +167,7 @@
         function pickRandomGame() {
             const cards = document.querySelectorAll('#game-list .game-card');
             if (cards.length > 0) {
-                const randomIndex = Math.floor(Math.random() * cards.length);
+                const randomIndex = Math.floor(Math.random() * (cards.length - 1));
                 cards[randomIndex].click();
             }
         }
