@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>منصة ألعابنا الخاصة</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root { --bg: #f8f9fa; --card-white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; transition: 0.5s; overflow: hidden; }
+        
+        /* Lobby Styles */
+        #lobby { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; }
+        .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* Game Screen Styles */
+        #game-screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; box-sizing: border-box; }
+        #display-card { background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 350px; min-height: 200px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; border: 8px solid #333; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        
+        button.action-btn { padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; border: none; color: white; background: #333; cursor: pointer; font-weight: bold; }
+        .back-btn { margin-top: 20px; background: none; border: 1px solid #999; color: #666; padding: 10px 20px; border-radius: 10px; }
+
+        /* Timer UI */
+        #timer-box { display: none; margin-bottom: 15px; font-weight: bold; color: #2e7d32; }
+    </style>
+</head>
+<body>
+
+    <div id="lobby">
+        <h1 style="color: #333; margin-bottom: 30px;">اختر لعبتنا الليلة ❤️</h1>
+        <button class="game-card" style="background: #ff85a2;" onclick="initGame('lehalibo')">لهاليبو 🔥</button>
+        <button class="game-card" style="background: #4a90e2;" onclick="initGame('deepTalk')">كلام من القلب 🧠</button>
+        <button class="game-card" style="background: #4caf50;" onclick="initGame('challenges')">تحديات ⚡</button>
+    </div>
+
+    <div id="game-screen">
+        <div id="turn-label" style="margin-bottom: 10px; font-weight: bold;"></div>
+        <div id="display-card">اضغط ابدأ</div>
+        
+        <div id="timer-box">
+            الوقت المتبقي: <span id="time">60</span> ثانية
+            <br>
+            <button onclick="runTimer()" style="background:#4caf50; color:white; padding:5px 15px; border-radius:10px; border:none; margin-top:5px;">ابدأ المؤقت</button>
+        </div>
+
+        <div class="controls">
+            <button class="action-btn" id="main-btn" onclick="drawCard()">سحب كارت</button>
+            <br>
+            <button class="back-btn" onclick="location.reload()">العودة للقائمة الرئيسية 🔄</button>
+        </div>
+    </div>
+
+    <script src="gamesData.js"></script>
+    <script>
+        let currentGame = null;
+        let usedIndices = [];
+        let isWifeTurn = Math.random() < 0.5;
+        let timer;
+
+        function initGame(gameId) {
+            currentGame = allGames[gameId];
+            usedIndices = [];
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            document.body.style.backgroundColor = currentGame.color;
+            document.getElementById('display-card').style.borderColor = currentGame.accent;
+            document.getElementById('main-btn').style.backgroundColor = currentGame.accent;
+            document.getElementById('turn-label').innerText = "جاهزين؟";
+        }
+
+        function drawCard() {
+            clearInterval(timer);
+            document.getElementById('timer-box').style.display = 'none';
+
+            if (usedIndices.length === currentGame.questions.length) {
+                alert("خلصنا اللعبة دي! اختار لعبة تانية.");
+                location.reload();
+                return;
+            }
+
+            let idx;
+            do { idx = Math.floor(Math.random() * currentGame.questions.length); } 
+            while (usedIndices.includes(idx));
+
+            usedIndices.push(idx);
+            const q = currentGame.questions[idx];
+            document.getElementById('display-card').innerText = q;
+
+            if (q.includes("(مؤقت)")) {
+                document.getElementById('timer-box').style.display = 'block';
+                document.getElementById('time').innerText = "60";
+            }
+
+            isWifeTurn = !isWifeTurn;
+            document.getElementById('turn-label').innerText = isWifeTurn ? "دور الزوجة 🌸" : "دور الزوج 💙";
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function runTimer() {
+            let timeLeft = 60;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("انتهى الوقت!");
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
