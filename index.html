@@ -10,6 +10,7 @@
             --wife-color: #ff85a2;
             --husband-color: #4a90e2;
             --neutral-dark: #1a1a1a;
+            --dos-gold: #ffc107;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; transition: 0.5s; overflow: hidden; }
         
@@ -32,6 +33,9 @@
         
         .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; }
         
+        #exchange-group { display: none; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: center; }
+        .ex-btn { padding: 10px; border-radius: 12px; border: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; background: var(--dos-gold); color: #000; }
+
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -62,6 +66,11 @@
             <div class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score" class="score-val">0</span></div>
         </div>
 
+        <div id="exchange-group">
+            <button class="ex-btn" onclick="exchangeDos('wife')">تبديل الزوجة (6 💋)</button>
+            <button class="ex-btn" onclick="exchangeDos('husband')">تبديل الزوج (6 💋)</button>
+        </div>
+
         <div id="display-card" class="fade-in">بصوا لبعض.. مين هيضحك؟</div>
 
         <div id="who-laughed-group" class="btn-group">
@@ -87,6 +96,7 @@
         let usedIndices = [];
         let scores = { wife: 0, husband: 0 };
         let activePlayer = null;
+        let isWifeTurn = Math.random() < 0.5; // لتبادل الأدوار في بوس أو دوس
 
         const gameList = document.getElementById('game-list');
         Object.values(allGames).forEach(game => {
@@ -113,20 +123,33 @@
             scores = { wife: 0, husband: 0 };
             updateScoreUI();
             
+            // إعادة ضبط العرض الافتراضي
+            document.getElementById('exchange-group').style.display = 'none';
+            document.getElementById('who-laughed-group').style.display = 'none';
+            document.getElementById('answer-group').style.display = 'none';
+            document.getElementById('display-card').style.borderColor = currentGame.accent;
+
             if (currentGame.hasScore) {
-                // وضع لهاليبو: شاشة تحدي فورية بدون زر "سحب"
+                // وضع لهاليبو
                 document.getElementById('score-board').style.display = 'flex';
                 document.getElementById('draw-btn').style.display = 'none';
                 document.getElementById('who-laughed-group').style.display = 'flex';
-                document.getElementById('answer-group').style.display = 'none';
                 document.getElementById('display-card').innerText = "👀 تحدي نظرات.. مين هيضحك الأول؟";
                 document.body.style.backgroundColor = "var(--neutral-dark)";
+            } else if (currentGame.id === 'boss_dos') {
+                // وضع بوس أو دوس
+                document.getElementById('score-board').style.display = 'flex';
+                document.getElementById('exchange-group').style.display = 'flex';
+                document.getElementById('draw-btn').style.display = 'block';
+                document.getElementById('draw-btn').innerText = "سحب كارت بوس 💋";
+                document.getElementById('display-card').innerText = "جاهزين لتجميع البوسات؟";
             } else {
                 // الألعاب العادية
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('draw-btn').style.display = 'block';
+                document.getElementById('draw-btn').innerText = "سحب كارت";
                 document.getElementById('draw-btn').style.backgroundColor = currentGame.accent;
-                document.getElementById('who-laughed-group').style.display = 'none';
+                document.getElementById('display-card').innerText = "اسحب أول كارت";
             }
         }
 
@@ -135,7 +158,6 @@
             if (usedIndices.length === currentGame.questions.length) {
                 alert("خلصنا الكروت!"); location.reload(); return;
             }
-            
             let idx;
             do { idx = Math.floor(Math.random() * currentGame.questions.length); } while (usedIndices.includes(idx));
             usedIndices.push(idx);
@@ -143,13 +165,12 @@
             activePlayer = player;
             document.getElementById('display-card').innerText = currentGame.questions[idx];
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
-            
             document.getElementById('who-laughed-group').style.display = 'none';
             document.getElementById('answer-group').style.display = 'flex';
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
         }
 
-        // الألعاب العادية: سحب كارت عادي بالتبادل
+        // دالة السحب الموحدة للألعاب العادية وبوس أو دوس
         function drawStandard() {
             if (usedIndices.length === currentGame.questions.length) {
                 alert("خلصنا الكروت!"); location.reload(); return;
@@ -158,18 +179,43 @@
             do { idx = Math.floor(Math.random() * currentGame.questions.length); } while (usedIndices.includes(idx));
             usedIndices.push(idx);
 
-            document.getElementById('display-card').innerText = currentGame.questions[idx];
-            document.body.style.backgroundColor = (usedIndices.length % 2 === 0) ? "var(--wife-color)" : "var(--husband-color)";
+            if (currentGame.id === 'boss_dos') {
+                // منطق بوس أو دوس: إضافة نقطة للسحب
+                let player = isWifeTurn ? 'wife' : 'husband';
+                scores[player]++;
+                updateScoreUI();
+                document.getElementById('display-card').innerText = currentGame.questions[idx];
+                document.body.style.backgroundColor = isWifeTurn ? "var(--wife-color)" : "var(--husband-color)";
+                isWifeTurn = !isWifeTurn; // تبديل الدور للسحبة الجاية
+            } else {
+                // الألعاب العادية
+                document.getElementById('display-card').innerText = currentGame.questions[idx];
+                document.body.style.backgroundColor = (usedIndices.length % 2 === 0) ? "var(--wife-color)" : "var(--husband-color)";
+            }
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${currentGame.questions.length}`;
+        }
+
+        // تبديل 6 كروت بوس بكارت دوس
+        function exchangeDos(player) {
+            if (scores[player] >= 6) {
+                scores[player] -= 6;
+                updateScoreUI();
+                
+                // سحب كارت دوس عشوائي من ملف البيانات
+                const dosList = currentGame.dosQuestions || ["تحدي دوس عشوائي!"];
+                const randomDos = dosList[Math.floor(Math.random() * dosList.length)];
+                
+                document.body.style.backgroundColor = "var(--dos-gold)";
+                document.getElementById('display-card').innerHTML = `<span style="color:#d32f2f">🔥 كارت دوس 🔥</span><br><br>${randomDos}`;
+            } else {
+                alert("لازم تجمع 6 بوسات الأول! 💋");
+            }
         }
 
         function confirmPoint(pts) {
             if (activePlayer === 'wife') scores.wife += pts;
             else scores.husband += pts;
-            
             updateScoreUI();
-            
-            // العودة لحالة التحدي فوراً
             document.getElementById('display-card').innerText = "👀 تحدي جديد.. مين هيضحك؟";
             document.getElementById('answer-group').style.display = 'none';
             document.getElementById('who-laughed-group').style.display = 'flex';
