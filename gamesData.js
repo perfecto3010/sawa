@@ -3,8 +3,8 @@ const allGames = {
         id: "lehalibo",
         title: "لهاليبو 🔥",
         rules: "تحدي نظرات: بصوا لبعض واللّي يضحك الأول هو اللّي يتسأل! الإجابة بـ (+1) والانسحاب بـ (-2). الفايز بيطلب طلب مبيتصرفش!",
-        color: "#c9184a",
-        accent: "linear-gradient(135deg, #c9184a, #ff4d6d)",
+        color: "#ff85a2",
+        accent: "#d32f2f",
         timerDuration: 120,
         hasScore: true, // علامة عشان الكود يعرف إن اللعبة دي فيها نقطدقيقتين
         questions: [
@@ -86,8 +86,8 @@ const allGames = {
         id: "boss_dos",
         title: "بوس أو دوس 💋",
         rules: "بداية اللعبة: حجز - ورقة - مقص والكسبان هيسحب ورقة بوس. اللي يجمع 6 كروت بوس لازم يبدلهم بكارت 'دوس' (تحدي قوي). الكروت المسحوبة بتخرج برا اللعبة.",
-        color: "#7209b7",
-        accent: "linear-gradient(135deg, #7209b7, #b5179e)",
+        color: "#6a1b9a",
+        accent: "#9c27b0",
         hasScore: false, // بنستخدم نظام الـ Boss count مش الـ Score العادي
 questions: [
         "شريكك هيغمي عينك وهيفضل يبوس فيك من شفايفك ووشك وخدودك وفي نفس الوقت هيلعبلك في شعرك",
@@ -125,8 +125,8 @@ questions: [
     shawk_aw_dawk: {
     id: 'shawk_aw_dawk',
     title: 'شوق أو دوق 🍓',
-    color: "#f72585",
-    accent: "linear-gradient(135deg, #f72585, #ff758f)",
+    color: '#ffe4e6', // لون الخلفية (بينك فاتح)
+    accent: '#ff4d6d', // لون الكروت (فوشيا)
     rules: 'عالم الحواس والمداعبة.. اللعبة تعتمد على تنفيذ التحديات الحميمية واستخدام الحواس الخمس لزيادة التشويق بينكما.',
     questions: [
         "بوس شريكك من الراس للرجلين 💋",
@@ -170,8 +170,8 @@ heat_meter: {
     id: "heat_meter",
     title: "سلم الشوق 🔥",
     rules: "3 مستويات من المتعة: ليفل 1 (كلام واعترافات)، ليفل 2 (لمسات وشقاوة)، ليفل 3 (نار وسيطرة). اللعب بالتبادل التلقائي.. استمتعوا!",
-    color: "#3f37c9",
-    accent: "linear-gradient(135deg, #3f37c9, #4895ef)",
+    color: "#4a0404",
+    accent: "#e63946",
     hasScore: false,
     isMultiLevel: true, 
     levels: {
@@ -261,8 +261,8 @@ heat_meter: {
     id: "positions_game",
     title: "أوضاع لهاليبو 🔥",
     rules: "مش عارفين تختاروا إيه؟ سيبوا اللعبة تختار لكم وضع عشوائي يجدد ليلتكم. دوس على الزرار ونفذوا فوراً!",
-    color: "#fb5607",
-    accent: "linear-gradient(135deg, #fb5607, #ffbe0b)",
+    color: "#2d005d",
+    accent: "#ff007f",
     hasScore: false,
     questions: [
         "وضع الفارسة: الزوجة فوق الزوج ووشها في وشه، هي اللي بتتحكم في السرعة والعمق بالكامل.",
