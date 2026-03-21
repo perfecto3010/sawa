@@ -174,22 +174,24 @@
                 document.getElementById('level-selection').style.display = 'flex';
                 return;
             }
-
+        
             document.getElementById('challenge-group').style.display = 'flex';
             document.body.style.backgroundColor = "var(--neutral-dark)";
             
-            // --- تعديل اللعبة الرابعة (درجات اللهلوبة) ---
-            if (currentGame.id === 'heat_meter') {
+            // التعديل هنا: إضافة اللعبة التالتة والرابعة لنظام الأدوار
+            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "الدور الآن على:";
                 
-                // إظهار زر واحد فقط بناءً على الدور
+                // إظهار الزر المناسب فقط حسب الدور
                 document.getElementById('btn-wife').style.display = (nextTurn === 'wife') ? 'block' : 'none';
                 document.getElementById('btn-husband').style.display = (nextTurn === 'husband') ? 'block' : 'none';
+                
+                // رجوع النص الأصلي كما طلبت
                 document.getElementById('display-card').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
             } 
-            // --- باقي الألعاب (النظام القديم) ---
             else {
+                // باقي الألعاب (حجر ورقة مقص)
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
                 document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
@@ -204,19 +206,15 @@
             }
         }
 
-        function selectLevel(lvl) {
-            currentLevel = lvl; usedIndices = []; resetToChallenge();
-        }
-
         function applyCard(player) {
             if (currentGame.id === 'boss_dos' && scores[player] >= 6) { triggerDos(player); return; }
-
+        
             let pool = currentGame.isMultiLevel ? currentGame.levels[currentLevel] : currentGame.questions;
-
+        
             if (usedIndices.length === pool.length) {
                 alert("انتهت الكروت!"); currentLevel = null; resetToChallenge(); return;
             }
-
+        
             let idx;
             do { idx = Math.floor(Math.random() * pool.length); } while (usedIndices.includes(idx));
             usedIndices.push(idx);
@@ -225,19 +223,19 @@
             document.getElementById('display-card').innerText = pool[idx];
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
-
+        
             if (currentGame.hasScore) {
                 document.getElementById('scoring-group').style.display = 'flex';
             } else {
                 if (currentGame.id === 'boss_dos') { scores[player]++; updateScoreUI(); }
                 document.getElementById('next-btn').style.display = 'block';
             }
-
-            // تبديل الدور تلقائياً للعبة الرابعة
-            if (currentGame.id === 'heat_meter') {
+        
+            // تبديل الدور تلقائياً للعبة التالتة والرابعة
+            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 nextTurn = (player === 'wife') ? 'husband' : 'wife';
             }
-
+        
             document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${pool.length}`;
             if (navigator.vibrate) navigator.vibrate(40);
         }
