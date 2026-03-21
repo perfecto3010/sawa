@@ -81,7 +81,9 @@
     </div>
 
     <div id="lobby" class="screen">
-        <h1 style="margin-bottom: 20px; font-size: 2rem; color: #ffffff;">اختر لعبة الليلة</h1>
+        <h1 style="margin-bottom: 20px; font-size: 2rem; color: #ffffff;">
+            اختر لعبة الليلة <span onclick="pickRandomGame()" style="cursor:pointer; font-size: 1.8rem; vertical-align: middle;">🎲</span>
+        </h1>
         <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;"></div>
     </div>
 
@@ -162,6 +164,13 @@
             });
         }
 
+        function pickRandomGame() {
+            const cards = document.querySelectorAll('#game-list .game-card');
+            if (cards.length > 0) {
+                const randomIndex = Math.floor(Math.random() * cards.length);
+                cards[randomIndex].click();
+            }
+        }
         function startActualGame() {
             document.getElementById('rules-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'flex';
