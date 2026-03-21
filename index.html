@@ -168,6 +168,10 @@
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
             
+            // إعادة تعيين أسماء الزراير للأصل (عشان لو رجعنا من لعبة الأوضاع)
+            document.getElementById('btn-wife').innerText = "الزوجة 🌸";
+            document.getElementById('btn-husband').innerText = "الزوج 💙";
+            
             if (currentGame.isMultiLevel && !currentLevel) {
                 document.getElementById('display-card').innerText = "اختر درجة الحرارة 🔥";
                 document.getElementById('challenge-group').style.display = 'none';
@@ -178,20 +182,28 @@
             document.getElementById('challenge-group').style.display = 'flex';
             document.body.style.backgroundColor = "var(--neutral-dark)";
             
-            // التعديل هنا: إضافة اللعبة التالتة والرابعة لنظام الأدوار
-            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
+            // 1. منطق لعبة الأوضاع الجنسية (زرار واحد عشوائي)
+            if (currentGame.id === 'positions_game') {
+                document.getElementById('score-board').style.display = 'none';
+                document.getElementById('challenge-txt').innerText = "جاهزين للتغيير؟";
+                document.getElementById('display-card').innerText = "دوس وشوف حظكم في وضع إيه النهاردة! 🎲";
+                
+                document.getElementById('btn-wife').style.display = 'block';
+                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲"; // تغيير نص الزرار
+                document.getElementById('btn-husband').style.display = 'none'; // إخفاء زرار الزوج
+            } 
+            // 2. منطق الألعاب اللي بالتبادل (شوق أو دوق و سلم الشوق)
+            else if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
                 document.getElementById('score-board').style.display = 'none';
                 document.getElementById('challenge-txt').innerText = "الدور الآن على:";
                 
-                // إظهار الزر المناسب فقط حسب الدور
                 document.getElementById('btn-wife').style.display = (nextTurn === 'wife') ? 'block' : 'none';
                 document.getElementById('btn-husband').style.display = (nextTurn === 'husband') ? 'block' : 'none';
                 
-                // رجوع النص الأصلي كما طلبت
                 document.getElementById('display-card').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
             } 
+            // 3. باقي الألعاب (حجر ورقة مقص)
             else {
-                // باقي الألعاب (حجر ورقة مقص)
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
                 document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
@@ -205,7 +217,6 @@
                 }
             }
         }
-
         function applyCard(player) {
             if (currentGame.id === 'boss_dos' && scores[player] >= 6) { triggerDos(player); return; }
         
