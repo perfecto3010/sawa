@@ -267,103 +267,103 @@ heat_meter: {
     questions: [
       { 
         text: "1. وضعية التبشيري (Missionary Position): يستلقي الرجل فوق المرأة وجهاً لوجه. هذا الوضع كلاسيكي ويوفر حميمية كبيرة وتواصلاً بصرياً مستمراً.", 
-        img: "images/image1.jpg" 
+        img: "Images/image1.jpg" 
       },
       { 
         text: "2. وضعية الفارسة (Cowgirl Position): تجلس المرأة فوق الرجل وهو مستلقٍ على ظهره. يمنح هذا الوضع المرأة التحكم الكامل في السرعة والعمق.", 
-        img: "images/image2.jpg" 
+        img: "Images/image2.jpg" 
       },
       { 
         text: "3. وضعية الخلفي (Doggy Style): تركع المرأة على يديها وركبتيها ويدخل الرجل من الخلف. يتيح هذا الوضع إيلاجاً عميقاً وإثارة قوية.", 
-        img: "images/image3.jpg" 
+        img: "Images/image3.jpg" 
       },
       { 
         text: "4. وضعية الملعقة (Spooning): يستلقي الشريكان على جانبيهما في نفس الاتجاه. وضعية مريحة جداً وتسمح بالتقارب الجسدي واللمسات الرقيقة.", 
-        img: "images/image4.jpg" 
+        img: "Images/image4.jpg" 
       },
       { 
         text: "5. وضعية الفارسة العكسية (Reverse Cowgirl): تجلس المرأة فوق الرجل لكن بظهرها نحوه. يتيح هذا الوضع زاوية رؤية مختلفة وتحكماً كاملاً للمرأة.", 
-        img: "images/image5.jpg" 
+        img: "Images/image5.jpg" 
       },
       { 
         text: "6. وضعية الوقوف (Standing Position): يقف الشريكان وجهاً لوجه. تتطلب هذه الوضعية بعض القوة البدنية وتضيف حيوية وتغييراً للروتين.", 
-        img: "images/image6.jpg" 
+        img: "Images/image6.jpg" 
       },
       { 
         text: "7. وضعية المقص (Scissors Position): يستلقي الشريكان وجهاً لوجه مع تشابك أرجلهما مثل المقص. توفر اتصالاً جسدياً وثيقاً وزوايا إثارة فريدة.", 
-        img: "images/image7.jpg" 
+        img: "Images/image7.jpg" 
       },
       { 
         text: "8. وضعية الجلوس (Sitting Position): يجلس الرجل على كرسي أو حافة السرير وتجلس المرأة في حضنه. تسمح بتبادل القبلات والاحتضان بسهولة.", 
-        img: "images/image8.jpg" 
+        img: "Images/image8.jpg" 
       },
       { 
         text: "9. وضعية الفراشة (Butterfly Position): تستلقي المرأة على حافة السرير مع رفع ساقيها، بينما يقف الرجل أمامها. توفر عمقاً كبيراً في الإيلاج.", 
-        img: "images/image9.jpg" 
+        img: "Images/image9.jpg" 
       },
       { 
         text: "10. وضعية الجسر (Bridge Position): تستلقي المرأة وترفع حوضها للأعلى مدعومة بيديها، بينما يدخل الرجل من الأعلى. تزيد من قوة الإثارة.", 
-        img: "images/image10.jpg" 
+        img: "Images/image10.jpg" 
       },
       { 
         text: "11. وضعية القرفصاء (Squatting Position): يجلس الرجل على الأرض أو السرير بينما تجلس المرأة في وضع القرفصاء فوقه. يسمح هذا الوضع للمرأة بالتحكم الكامل في الحركة والإيقاع.", 
-        img: "images/image11.jpg" 
+        img: "Images/image11.jpg" 
       },
       { 
         text: "12. وضعية الرقص (Lap Dance Position): يجلس الرجل على كرسي بينما تجلس المرأة فوقه وتلتف ذراعيها حول رقبته. يسمح بالتقارب الجسدي وتبادل القبلات.", 
-        img: "images/image12.jpg" 
+        img: "Images/image12.jpg" 
       },
       { 
         text: "13. وضعية المقص المتقاطع (Cross-Scissors Position): يستلقي الشريكان على ظهريهما بشكل متعاكس مع تشابك الأقدام. يتيح تجربة فريدة في زوايا الدخول.", 
-        img: "images/image13.jpg" 
+        img: "Images/image13.jpg" 
       },
       { 
         text: "14. وضعية الحضانة (Cradling Position): يجلس الرجل ويمد ساقيه أمامه بينما تجلس المرأة في حضنه وتلتف ساقيها حول خصره. تزيد من الحميمية بشكل كبير.", 
-        img: "images/image14.jpg" 
+        img: "Images/image14.jpg" 
       },
       { 
         text: "15. وضعية الفيل (Elephant Position): تجلس المرأة على يديها وركبتيها بينما يدخل الرجل من الخلف، مع إمكانية خفض الجسد لزيادة الراحة.", 
-        img: "images/image15.jpg" 
+        img: "Images/image15.jpg" 
       },
       { 
         text: "16. وضعية الجلوس المتعاكسة (Reverse Sitting Position): يجلس الرجل والمرأة متعاكسين على كرسيين بجانب بعضهما البعض مع تداخل أرجلهما.", 
-        img: "images/image16.jpg" 
+        img: "Images/image16.jpg" 
       },
       { 
         text: "17. وضعية الوجه للأسفل (Face Down Position): تستلقي المرأة على بطنها بينما يجلس الرجل خلفها ويدخل من الخلف. يتيح زوايا دخول مختلفة ومثيرة.", 
-        img: "images/image17.jpg" 
+        img: "Images/image17.jpg" 
       },
       { 
         text: "18. وضعية القرفصاء العكسية (Reverse Squatting Position): يجلس الرجل وتجلس المرأة فوقه بظهرها نحوه في وضع القرفصاء للتحكم الكامل في الإيقاع.", 
-        img: "images/image18.jpg" 
+        img: "Images/image18.jpg" 
       },
       { 
         text: "19. وضعية الوقوف العكسي (Reverse Standing Position): تقف المرأة بظهرها إلى الرجل بينما يمسك بخصرها ويدخل من الخلف. وضعية مليئة بالإثارة والمفاجأة.", 
-        img: "images/image19.jpg" 
+        img: "Images/image19.jpg" 
       },
       { 
         text: "20. وضعية المقص الجانبي (Side-Scissors Position): يستلقي الشريكان على جانبيهما بشكل متعاكس مع تشابك الأقدام لتجربة زوايا جديدة.", 
-        img: "images/image20.jpg" 
+        img: "Images/image20.jpg" 
       },
       { 
         text: "21. وضعية القوس (Arch Position): ترفع المرأة حوضها مشكلة شكلاً شبيهاً بالجسر وتدعم نفسها بكتفيها، بينما يمتطيها الرجل من الأعلى لإيلاج عميق.", 
-        img: "images/image21.jpg" 
+        img: "Images/image21.jpg" 
       },
       { 
         text: "22. وضعية العناق (Embrace Position): يجلس الشريكان في وضع العناق الوثيق بالأذرع والسيقان، مما يسهل تبادل القبلات واللمسات الحميمية.", 
-        img: "images/image22.jpg" 
+        img: "Images/image22.jpg" 
       },
       { 
         text: "23. وضعية الطاولة (Table Position): تجلس المرأة على حافة الطاولة بينما يقف الرجل أمامها. وضعية تسمح بزوايا دخول مميزة وتغيير للمكان.", 
-        img: "images/image23.jpg" 
+        img: "Images/image23.jpg" 
       },
       { 
         text: "24. وضعية السلم (Staircase Position): يجلس الشريكان على درجات السلم بشكل متعاكس مع تداخل الأرجل، مما يضيف طابعاً مختلفاً للتجربة.", 
-        img: "images/image24.jpg" 
+        img: "Images/image24.jpg" 
       },
       { 
         text: "25. وضعية الكلب الكسول (Lazy Doggy Position): تطور للوضع الخلفي حيث يكون كلاهما مستلقيان للأسفل، مما يجمع بين الراحة والإيلاج الخلفي العميق.", 
-        img: "images/image25.jpg" 
+        img: "Images/image25.jpg" 
       }
         ]
     }
