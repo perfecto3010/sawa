@@ -132,7 +132,7 @@
 
         <div class="controls-area">
             <div id="challenge-group" class="btn-group">
-                <p id="challenge-txt" style="color:white; text-align:center; font-weight:bold; margin-bottom:5px;">مين اللي ضحك الأول؟ (هو اللي هيتسأل)؟</p>
+                <p id="challenge-txt" style="color:white; text-align:center; font-weight:bold; margin-bottom:5px;">مين اللي كسب ؟</p>
                 <div id="action-btns-container" style="display:flex; gap:10px; width:100%;">
                     <button id="btn-wife" class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">الزوجة 🌸</button>
                     <button id="btn-husband" class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">الزوج 💙</button>
@@ -234,7 +234,7 @@
             else {
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
-                document.getElementById('challenge-txt').innerText = "مين اللي ضحك الأول؟ (هو اللي هيتسأل)";
+                document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
                 
                 if (currentGame.id === 'lehalibo') {
                     document.getElementById('text-container').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
