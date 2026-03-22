@@ -120,6 +120,7 @@
 
         <div id="display-card" class="fade-in">
             <div id="timer-display">60</div>
+            <img id="position-image" src="" style="width: 100%; max-height: 250px; object-fit: contain; display: none; margin-bottom: 15px; border-radius: 15px;">
             <div id="text-container">البداية..</div>
         </div>
 
@@ -201,7 +202,7 @@
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
-            
+            document.getElementById('position-image').style.display = 'none'; // إضافة هذا السطر
             document.getElementById('btn-wife').innerText = "الزوجة 🌸";
             document.getElementById('btn-husband').innerText = "الزوج 💙";
             
@@ -281,16 +282,32 @@
             usedIndices.push(idx);
             activePlayer = player;
             
-            const question = pool[idx];
-            document.getElementById('text-container').innerText = question;
+            const questionData = pool[idx];
+            const textContainer = document.getElementById('text-container');
+            const imageElement = document.getElementById('position-image');
+
+            // --- التعديل الجوهري لدعم الصور ---
+            if (currentGame.id === 'positions_game') {
+                // عرض النص والصورة للعبة الأوضاع
+                textContainer.innerText = questionData.text;
+                imageElement.src = questionData.img;
+                imageElement.style.display = 'block';
+            } else {
+                // عرض النص فقط وإخفاء الصورة لبقية الألعاب
+                textContainer.innerText = typeof questionData === 'string' ? questionData : questionData.text;
+                imageElement.style.display = 'none';
+            }
+            // ---------------------------------
+
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
         
             // فحص المؤقت التلقائي
             const timerDisp = document.getElementById('timer-display');
-            if (question.includes("مدة") || question.includes("ثانية")) {
-                // استخراج الرقم من النص (مثلاً: "لمدة 30 ثانية" -> يطلع 30)
-                const matchedSeconds = question.match(/\d+/); 
+            const textToCheck = textContainer.innerText; // نفحص النص المعروض فعلياً
+            
+            if (textToCheck.includes("مدة") || textToCheck.includes("ثانية")) {
+                const matchedSeconds = textToCheck.match(/\d+/); 
                 const secondsToSet = matchedSeconds ? parseInt(matchedSeconds[0]) : 60;
                 
                 timerDisp.style.display = 'block';
