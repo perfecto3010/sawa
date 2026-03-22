@@ -19,6 +19,7 @@
             --neutral-dark: #1a1a1a;
             --dos-gold: #ffc107;
             --dos-text: #541010;
+            --main-purple: #6441a5; /* لون جديد للـ PIN */
         }
         
         body { 
@@ -29,7 +30,26 @@
             overflow: hidden; touch-action: manipulation;
         }
         
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
+        /* --- تعديل شاشة الدخول الجديد --- */
+        #auth-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #0f0f0f; z-index: 9999; display: flex; 
+            flex-direction: column; align-items: center; justify-content: center; 
+            color: white; text-align: center; 
+        }
+
+        .pin-dots { display: flex; justify-content: center; gap: 15px; margin: 25px 0; }
+        .dot { width: 18px; height: 18px; border: 2px solid var(--main-purple); border-radius: 50%; transition: 0.2s; }
+        .dot.active { background-color: var(--main-purple); transform: scale(1.2); }
+
+        .pin-keyboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 280px; margin-top: 20px; }
+        .pin-keyboard button { 
+            width: 70px; height: 70px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(255,255,255,0.05); color: white; font-size: 1.5rem; cursor: pointer; transition: 0.2s; 
+        }
+        .pin-keyboard button:active { background: var(--main-purple); transform: scale(0.9); }
+        .pin-keyboard button.delete { border: none; color: #ff4444; font-size: 1.2rem; }
+        /* ---------------------------------- */
 
         .screen { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
         #lobby {background-color: #0f0f0f; display: flex; justify-content: center; }
@@ -55,7 +75,6 @@
 
         #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
         
-        /* شكل العداد الجديد */
         #timer-display { 
             display: none; 
             background: #f44336; 
@@ -86,8 +105,30 @@
 <body>
 
     <div id="auth-overlay">
-        <h2 style="font-size: 2.2rem; margin-bottom: 20px;">Sawa | سوا ❤️</h2>
-        <button onclick="checkAuth()" class="main-btn" style="background:var(--wife-color);">دخول</button>
+        <h2 style="font-size: 1.8rem; margin-bottom: 5px;">Sawa | سوا ❤️</h2>
+        <p style="opacity: 0.7; font-size: 0.9rem;">أدخل رمز الدخول</p>
+        
+        <div class="pin-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="pin-keyboard">
+            <button onclick="addNumber(1)">1</button>
+            <button onclick="addNumber(2)">2</button>
+            <button onclick="addNumber(3)">3</button>
+            <button onclick="addNumber(4)">4</button>
+            <button onclick="addNumber(5)">5</button>
+            <button onclick="addNumber(6)">6</button>
+            <button onclick="addNumber(7)">7</button>
+            <button onclick="addNumber(8)">8</button>
+            <button onclick="addNumber(9)">9</button>
+            <button style="visibility: hidden;"></button>
+            <button onclick="addNumber(0)">0</button>
+            <button class="delete" onclick="deleteNumber()">⌫</button>
+        </div>
     </div>
 
     <div id="lobby" class="screen">
@@ -159,6 +200,48 @@
         let currentLevel = null;
         let nextTurn = 'wife';
         let timerInterval = null;
+        
+        // --- منطق الـ PIN الجديد ---
+        let userPin = "";
+        const correctPin = "3042023"; // كلمة السر الحالية
+
+        function addNumber(num) {
+            if (userPin.length < 7) { // طول كلمة سرك الحالية 7 أرقام
+                userPin += num;
+                updatePinDots();
+                if (userPin.length === 7) {
+                    checkPin();
+                }
+            }
+        }
+
+        function deleteNumber() {
+            userPin = userPin.slice(0, -1);
+            updatePinDots();
+        }
+
+        function updatePinDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                // ملاحظة: لو الباسورد 7 أرقام، ممكن تحتاج تعدل الـ HTML لـ 7 دوائر
+                // حالياً هعلم أول 4 دوائر بس كشكل
+                if (index < userPin.length) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        function checkPin() {
+            if (userPin === correctPin) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                sessionStorage.setItem('isAuthorized', 'true');
+            } else {
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                alert("رمز خاطئ!");
+                userPin = "";
+                updatePinDots();
+            }
+        }
+        // -------------------------
 
         const gameList = document.getElementById('game-list');
         if(typeof allGames !== 'undefined') {
@@ -203,7 +286,7 @@
             document.getElementById('scoring-group').style.display = 'none';
             document.getElementById('next-btn').style.display = 'none';
             document.getElementById('level-selection').style.display = 'none';
-            document.getElementById('position-image').style.display = 'none'; // إضافة هذا السطر
+            document.getElementById('position-image').style.display = 'none';
             document.getElementById('btn-wife').innerText = "الزوجة 🌸";
             document.getElementById('btn-husband').innerText = "الزوج 💙";
             
@@ -289,7 +372,7 @@
             const textContainer = document.getElementById('text-container');
             const imageElement = document.getElementById('position-image');
             const cardHint = document.getElementById('card-hint');
-            cardHint.style.display = 'block'; // نظهر الـ Hint
+            cardHint.style.display = 'block'; 
             if (currentGame.id === 'lehalibo') {
                 if (player === 'wife') {
                     cardHint.innerText = "⚠️ الزوجة ضحكت! السؤال موجه للزوجة الآن:";
@@ -300,31 +383,27 @@
                 if (player === 'wife') {
                     cardHint.innerText = "🏆 الزوجة كسبت التحدي! اقري الكارت ويتنفذ:";
                 } else {
-                    cardHint.innerText = "🏆 الزوجة كسب التحدي! اقري الكارت ويتنفذ:";
+                    cardHint.innerText = "🏆 الزوج كسب التحدي! اقري الكارت ويتنفذ:";
                 }
             } 
             else {
-                cardHint.style.display = 'none'; // نخفيه في الألعاب اللي مش محتاجاه
+                cardHint.style.display = 'none';
             }
-            // --- التعديل الجوهري لدعم الصور ---
+
             if (currentGame.id === 'positions_game') {
-                // عرض النص والصورة للعبة الأوضاع
                 textContainer.innerText = questionData.text;
                 imageElement.src = questionData.img;
                 imageElement.style.display = 'block';
             } else {
-                // عرض النص فقط وإخفاء الصورة لبقية الألعاب
                 textContainer.innerText = typeof questionData === 'string' ? questionData : questionData.text;
                 imageElement.style.display = 'none';
             }
-            // ---------------------------------
 
             document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
             document.getElementById('challenge-group').style.display = 'none';
         
-            // فحص المؤقت التلقائي
             const timerDisp = document.getElementById('timer-display');
-            const textToCheck = textContainer.innerText; // نفحص النص المعروض فعلياً
+            const textToCheck = textContainer.innerText;
             
             if (textToCheck.includes("مدة") || textToCheck.includes("ثانية")) {
                 const matchedSeconds = textToCheck.match(/\d+/); 
@@ -389,12 +468,6 @@
             document.getElementById('h-score').innerText = scores.husband;
         }
 
-        function checkAuth() {
-            if (prompt("كلمة السر:") === "3042023") {
-                document.getElementById('auth-overlay').style.display = 'none';
-                sessionStorage.setItem('isAuthorized', 'true');
-            }
-        }
         window.onload = () => { if(sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
     </script>
 </body>
