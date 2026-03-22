@@ -234,15 +234,17 @@
             else {
                 document.getElementById('btn-wife').style.display = 'block';
                 document.getElementById('btn-husband').style.display = 'block';
-                document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
-                
                 if (currentGame.id === 'lehalibo') {
-                    document.getElementById('text-container').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
-                    document.getElementById('score-board').style.display = 'flex';
-                } else {
-                    document.getElementById('text-container').innerText = "✌️ حجر ورقة مقص.. مين اللي كسب؟";
-                    document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
-                }
+                        document.getElementById('text-container').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
+                        document.getElementById('challenge-txt').innerHTML = "<span style='color:#ffeb3b'>القاعدة: اللي يضحك الأول هو اللي يتسأل</span><br>مين اللي ضحك؟";
+                        document.getElementById('btn-wife').innerText = "الزوجة 😂";
+                        document.getElementById('btn-husband').innerText = "الزوج 😂";
+                        document.getElementById('score-board').style.display = 'flex';
+                    } else {
+                        document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
+                        document.getElementById('text-container').innerText = "✌️ حجر ورقة مقص..";
+                        document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
+                    }
             }
         }
 
