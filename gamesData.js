@@ -1,401 +1,295 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Sawa | سوا ❤️</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#e63946">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/426/426833.png">
-
-    <style>
-        :root { 
-            --bg: #f8f9fa; 
-            --wife-color: #ff85a2;
-            --husband-color: #4a90e2;
-            --neutral-dark: #1a1a1a;
-            --dos-gold: #ffc107;
-            --dos-text: #541010;
-        }
-        
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; background: var(--bg); 
-            display: flex; flex-direction: column; 
-            height: 100dvh; transition: background-color 0.8s ease; 
-            overflow: hidden; touch-action: manipulation;
-        }
-        
-        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; }
-
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; width: 100vw; padding: 15px; box-sizing: border-box; position: absolute; }
-        #lobby {background-color: #0f0f0f; display: flex; justify-content: center; }
-
-        .game-card { width: 90%; max-width: 400px; padding: 25px; margin: 10px; border-radius: 20px; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
-        
-        .header-area { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 5px 0; }
-        .exit-btn { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
-
-        #score-board { display: none; justify-content: center; gap: 10px; flex-grow: 1; }
-        .score-box { flex: 1; max-width: 100px; padding: 8px; border-radius: 12px; color: white; font-weight: bold; text-align: center; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .score-val { font-size: 1.2rem; display: block; }
-
-        #display-card { 
-            background: white; padding: 25px; border-radius: 25px; 
-            width: 85%; max-width: 350px; flex-grow: 1; 
-            max-height: 45vh; margin: 20px 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 1.3rem; font-weight: bold; border: 8px solid #333; 
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            line-height: 1.5; transition: 0.4s; position: relative;
-        }
-
-        #display-card.dos-mode { background: linear-gradient(45deg, #ffc107, #ffeb3b); border: 8px solid #ff9800; color: var(--dos-text); animation: pulse 1.5s infinite; }
-        
-        /* شكل العداد الجديد */
-        #timer-display { 
-            display: none; 
-            background: #f44336; 
-            color: white; 
-            width: 60px; height: 60px; 
-            border-radius: 50%; 
-            line-height: 60px; 
-            text-align: center; 
-            font-size: 1.5rem; 
-            font-weight: 900; 
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(244, 67, 54, 0.4);
-            border: 3px solid #fff;
-        }
-
-        .level-selection { display: none; flex-direction: column; gap: 12px; width: 100%; max-width: 300px; }
-        .level-btn { padding: 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-
-        .controls-area { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .btn-group { display: none; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
-        .action-btn { padding: 16px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; }
-        .main-btn { padding: 18px 60px; font-size: 1.3rem; border-radius: 50px; border: none; color: white; cursor: pointer; font-weight: bold; width: 100%; max-width: 250px; }
-        .next-btn { background: #333; color: white; padding: 15px 50px; border-radius: 30px; border: none; font-weight: bold; display: none; }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-    <div id="auth-overlay">
-        <h2 style="font-size: 2.2rem; margin-bottom: 20px;">Sawa | سوا ❤️</h2>
-        <button onclick="checkAuth()" class="main-btn" style="background:var(--wife-color);">دخول</button>
-    </div>
-
-    <div id="lobby" class="screen">
-        <h1 style="margin-bottom: 20px; font-size: 2rem; color: #ffffff;">
-            اختر لعبة الليلة <span onclick="pickRandomGame()" style="cursor:pointer; font-size: 1.8rem; vertical-align: middle;">🎲</span>
-        </h1>
-        <div id="game-list" style="width: 100%; display: flex; flex-direction: column; align-items: center; overflow-y: auto;"></div>
-    </div>
-
-    <div id="rules-screen" class="screen">
-        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
-            <div class="fade-in" style="background:white; padding:30px; border-radius:30px; text-align:center; width:85%; max-width:400px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);">
-                <h2 id="rules-title" style="font-size: 1.8rem;"></h2>
-                <p id="rules-text" style="font-size:1.1rem; color:#444; margin:20px 0; line-height:1.6;"></p>
-                <button class="main-btn" id="confirm-rules-btn" onclick="startActualGame()">يلا بينا! 🚀</button>
-                <div style="margin-top: 15px;"><button onclick="location.reload()" style="background:none; border:none; color:#888; text-decoration: underline;">رجوع</button></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="game-screen" class="screen">
-        <div class="header-area">
-            <div style="width: 35px;"></div> 
-            <div id="score-board">
-                <div id="w-box" class="score-box" style="background:var(--wife-color)">الزوجة <span id="w-score" class="score-val">0</span></div>
-                <div id="h-box" class="score-box" style="background:var(--husband-color)">الزوج <span id="h-score" class="score-val">0</span></div>
-            </div>
-            <button class="exit-btn" onclick="location.reload()">✕</button>
-        </div>
-
-        <div id="display-card" class="fade-in">
-            <div id="timer-display">60</div>
-            <div id="card-hint" style="font-size: 0.85rem; color: #008080; margin-bottom: 10px; font-weight: bold; border-bottom: 1px dashed rgba(255,255,255,0.3); padding-bottom: 5px; display: none;"></div>
-            <img id="position-image" src="" style="width: 100%; max-height: 250px; object-fit: contain; display: none; margin-bottom: 15px; border-radius: 15px;">
-            <div id="text-container">البداية..</div>
-        </div>
-
-        <div id="level-selection" class="level-selection fade-in">
-            <button class="level-btn" style="background:#4caf50" onclick="selectLevel('level1')">هادي (صراحة) 😊</button>
-            <button class="level-btn" style="background:#ff9800" onclick="selectLevel('level2')">متوسط (جرأة) 😉</button>
-            <button class="level-btn" style="background:#f44336" onclick="selectLevel('level3')">نار (لهاليبو) 🔥🔥🔥</button>
-        </div>
-
-        <div class="controls-area">
-            <div id="challenge-group" class="btn-group">
-                <p id="challenge-txt" style="color:white; text-align:center; font-weight:bold; margin-bottom:5px;">مين اللي كسب ؟</p>
-                <div id="action-btns-container" style="display:flex; gap:10px; width:100%;">
-                    <button id="btn-wife" class="action-btn" style="background:var(--wife-color); flex:1;" onclick="applyCard('wife')">الزوجة 🌸</button>
-                    <button id="btn-husband" class="action-btn" style="background:var(--husband-color); flex:1;" onclick="applyCard('husband')">الزوج 💙</button>
-                </div>
-            </div>
-
-            <div id="scoring-group" class="btn-group">
-                <button class="action-btn" style="background:#4caf50" onclick="confirmPoint(1)">جاوب صح (+1) ✅</button>
-                <button class="action-btn" style="background:#f44336" onclick="confirmPoint(-2)">انسحب (-2) ❌</button>
-            </div>
-
-            <button id="next-btn" class="next-btn fade-in" onclick="resetToChallenge()">التالي ⮕</button>
-            <div id="progress" style="color:white; font-size:0.8rem; opacity:0.7;"></div>
-        </div>
-    </div>
-
-    <script src="gamesData.js"></script>
-    <script>
-        let currentGame = null;
-        let usedIndices = [];
-        let scores = { wife: 0, husband: 0 };
-        let activePlayer = null;
-        let currentLevel = null;
-        let nextTurn = 'wife';
-        let timerInterval = null;
-
-        const gameList = document.getElementById('game-list');
-        if(typeof allGames !== 'undefined') {
-            Object.values(allGames).forEach(game => {
-                const btn = document.createElement('button');
-                btn.className = 'game-card';
-                btn.style.backgroundColor = game.accent;
-                btn.innerText = game.title;
-                btn.onclick = () => {
-                    currentGame = game;
-                    document.body.style.backgroundColor = game.color;
-                    document.getElementById('rules-title').innerText = game.title;
-                    document.getElementById('rules-text').innerText = game.rules;
-                    document.getElementById('confirm-rules-btn').style.backgroundColor = game.accent;
-                    document.getElementById('lobby').style.display = 'none';
-                    document.getElementById('rules-screen').style.display = 'flex';
-                };
-                gameList.appendChild(btn);
-            });
-        }
-
-        function pickRandomGame() {
-            const cards = document.querySelectorAll('#game-list .game-card');
-            if (cards.length > 0) {
-                const randomIndex = Math.floor(Math.random() * (cards.length - 1));
-                cards[randomIndex].click();
-            }
-        }
-
-        function startActualGame() {
-            document.getElementById('rules-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'flex';
-            usedIndices = []; scores = { wife: 0, husband: 0 }; currentLevel = null; nextTurn = 'wife';
-            updateScoreUI();
-            resetToChallenge();
-        }
-
-        function resetToChallenge() {
-            clearInterval(timerInterval);
-            document.getElementById('timer-display').style.display = 'none';
-            document.getElementById('display-card').classList.remove('dos-mode');
-            document.getElementById('scoring-group').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
-            document.getElementById('level-selection').style.display = 'none';
-            document.getElementById('position-image').style.display = 'none'; // إضافة هذا السطر
-            document.getElementById('btn-wife').innerText = "الزوجة 🌸";
-            document.getElementById('btn-husband').innerText = "الزوج 💙";
-            
-            if (currentGame.isMultiLevel && !currentLevel) {
-                document.getElementById('text-container').innerText = "اختر درجة الحرارة 🔥";
-                document.getElementById('challenge-group').style.display = 'none';
-                document.getElementById('level-selection').style.display = 'flex';
-                return;
-            }
-        
-            document.getElementById('challenge-group').style.display = 'flex';
-            document.body.style.backgroundColor = "var(--neutral-dark)";
-            
-            if (currentGame.id === 'positions_game') {
-                document.getElementById('score-board').style.display = 'none';
-                document.getElementById('challenge-txt').innerText = "جاهزين للتغيير؟";
-                document.getElementById('text-container').innerText = "دوس وشوف حظكم في وضع إيه النهاردة! 🎲";
-                document.getElementById('btn-wife').style.display = 'block';
-                document.getElementById('btn-wife').innerText = "اختار لنا وضع 🎲";
-                document.getElementById('btn-husband').style.display = 'none';
-            } 
-            else if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
-                document.getElementById('score-board').style.display = 'none';
-                document.getElementById('challenge-txt').innerText = "الدور الآن على:";
-                document.getElementById('btn-wife').style.display = (nextTurn === 'wife') ? 'block' : 'none';
-                document.getElementById('btn-husband').style.display = (nextTurn === 'husband') ? 'block' : 'none';
-                document.getElementById('text-container').innerText = (nextTurn === 'wife') ? "سؤال للزوجة.. 🌸" : "سؤال للزوج.. 💙";
-            } 
-            else {
-                document.getElementById('btn-wife').style.display = 'block';
-                document.getElementById('btn-husband').style.display = 'block';
-                if (currentGame.id === 'lehalibo') {
-                        document.getElementById('text-container').innerText = "👀 تحدي نظرات.. مين هيضحك؟";
-                        document.getElementById('challenge-txt').innerHTML = "<span style='color:#ffeb3b'>القاعدة: اللي يضحك الأول هو اللي يتسأل</span><br>مين اللي ضحك؟";
-                        document.getElementById('btn-wife').innerText = "الزوجة 😂";
-                        document.getElementById('btn-husband').innerText = "الزوج 😂";
-                        document.getElementById('score-board').style.display = 'flex';
-                    } else {
-                        document.getElementById('challenge-txt').innerText = "مين اللي كسب؟";
-                        document.getElementById('text-container').innerText = "✌️ حجر ورقة مقص..";
-                        document.getElementById('score-board').style.display = (currentGame.id === 'boss_dos') ? 'flex' : 'none';
-                    }
-            }
-        }
-
-        function selectLevel(lvl) {
-            currentLevel = lvl;
-            usedIndices = [];
-            document.getElementById('level-selection').style.display = 'none';
-            resetToChallenge();
-        }
-
-        function applyCard(player) {
-            clearInterval(timerInterval);
-            if (currentGame.id === 'boss_dos' && scores[player] >= 6) { 
-                triggerDos(player); 
-                return; 
-            }
-        
-            let pool;
-            if (currentGame.isMultiLevel) {
-                pool = currentGame.levels[currentLevel];
-            } else {
-                pool = currentGame.questions || currentGame.dosQuestions;
-            }
-        
-            if (!pool || usedIndices.length === pool.length) {
-                alert("انتهت الكروت!"); 
-                currentLevel = null; 
-                resetToChallenge(); 
-                return;
-            }
-        
-            let idx;
-            do { 
-                idx = Math.floor(Math.random() * pool.length); 
-            } while (usedIndices.includes(idx));
-            
-            usedIndices.push(idx);
-            activePlayer = player;
-            
-            const questionData = pool[idx];
-            const textContainer = document.getElementById('text-container');
-            const imageElement = document.getElementById('position-image');
-            const cardHint = document.getElementById('card-hint');
-            cardHint.style.display = 'block'; // نظهر الـ Hint
-            if (currentGame.id === 'lehalibo') {
-                if (player === 'wife') {
-                    cardHint.innerText = "⚠️ الزوجة ضحكت! السؤال موجه للزوجة الآن:";
-                } else {
-                    cardHint.innerText = "⚠️ الزوج ضحك! السؤال موجه للزوج الآن:";
-                }
-            }else if (currentGame.id === 'boss_dos') {
-                if (player === 'wife') {
-                    cardHint.innerText = "🏆 الزوجة كسبت التحدي! اقري الكارت ويتنفذ:";
-                } else {
-                    cardHint.innerText = "🏆 الزوجة كسب التحدي! اقري الكارت ويتنفذ:";
-                }
-            } 
-            else {
-                cardHint.style.display = 'none'; // نخفيه في الألعاب اللي مش محتاجاه
-            }
-            // --- التعديل الجوهري لدعم الصور ---
-            if (currentGame.id === 'positions_game') {
-                // عرض النص والصورة للعبة الأوضاع
-                textContainer.innerText = questionData.text;
-                imageElement.src = questionData.img;
-                imageElement.style.display = 'block';
-            } else {
-                // عرض النص فقط وإخفاء الصورة لبقية الألعاب
-                textContainer.innerText = typeof questionData === 'string' ? questionData : questionData.text;
-                imageElement.style.display = 'none';
-            }
-            // ---------------------------------
-
-            document.body.style.backgroundColor = player === 'wife' ? "var(--wife-color)" : "var(--husband-color)";
-            document.getElementById('challenge-group').style.display = 'none';
-        
-            // فحص المؤقت التلقائي
-            const timerDisp = document.getElementById('timer-display');
-            const textToCheck = textContainer.innerText; // نفحص النص المعروض فعلياً
-            
-            if (textToCheck.includes("مدة") || textToCheck.includes("ثانية")) {
-                const matchedSeconds = textToCheck.match(/\d+/); 
-                const secondsToSet = matchedSeconds ? parseInt(matchedSeconds[0]) : 60;
-                
-                timerDisp.style.display = 'block';
-                startTimer(secondsToSet);
-            } else {
-                timerDisp.style.display = 'none';
-            }
-
-            if (currentGame.hasScore) {
-                document.getElementById('scoring-group').style.display = 'flex';
-            } else {
-                if (currentGame.id === 'boss_dos') { 
-                    scores[player]++; 
-                    updateScoreUI(); 
-                }
-                document.getElementById('next-btn').style.display = 'block';
-            }
-        
-            if (currentGame.id === 'heat_meter' || currentGame.id === 'shawk_aw_dawk') {
-                nextTurn = (player === 'wife') ? 'husband' : 'wife';
-            }
-        
-            document.getElementById('progress').innerText = `كارت ${usedIndices.length} من ${pool.length}`;
-            if (navigator.vibrate) navigator.vibrate(40);
-        }
-
-        function startTimer(seconds) {
-            let timeLeft = seconds;
-            const display = document.getElementById('timer-display');
-            display.innerText = timeLeft;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                display.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    display.innerText = "⏰";
-                    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-                }
-            }, 1000);
-        }
-
-        function triggerDos(player) {
-            clearInterval(timerInterval);
-            document.getElementById('timer-display').style.display = 'none';
-            scores[player] -= 6; updateScoreUI();
-            const dos = currentGame.dosQuestions[Math.floor(Math.random() * currentGame.dosQuestions.length)];
-            document.body.style.backgroundColor = "var(--dos-gold)";
-            const card = document.getElementById('display-card');
-            card.classList.add('dos-mode');
-            document.getElementById('text-container').innerHTML = `<div style="font-size:0.9rem; margin-bottom:10px;">🔥 تحدي دوس إجباري 🔥</div>${dos}`;
-            document.getElementById('challenge-group').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'block';
-        }
-
-        function confirmPoint(pts) { scores[activePlayer] += pts; updateScoreUI(); resetToChallenge(); }
-
-        function updateScoreUI() {
-            document.getElementById('w-score').innerText = scores.wife;
-            document.getElementById('h-score').innerText = scores.husband;
-        }
-
-        function checkAuth() {
-            if (prompt("كلمة السر:") === "3042023") {
-                document.getElementById('auth-overlay').style.display = 'none';
-                sessionStorage.setItem('isAuthorized', 'true');
-            }
-        }
-        window.onload = () => { if(sessionStorage.getItem('isAuthorized') === 'true') document.getElementById('auth-overlay').style.display = 'none'; };
-    </script>
-</body>
-</html>
+const allGames = {
+    lehalibo: {
+        id: "lehalibo",
+        title: "لهاليبو يح يح🔥",
+        rules: "تحدي نظرات: بصوا لبعض واللّي يضحك الأول هو اللّي يتسأل! الإجابة بـ (+1) والانسحاب بـ (-2). الفايز بيطلب طلب لازم يتنفذ!",
+        color: "#ff85a2",
+        accent: "#ff0000",
+        timerDuration: 120,
+        hasScore: true, // علامة عشان الكود يعرف إن اللعبة دي فيها نقطدقيقتين
+        questions: [
+        "أكتر حاجة بتحبها في الجنس هي ايه ؟",
+        "بتحب تكون فوق ولا تحت ؟",
+        "ايه الجزء اللي في جسمك اللي نفسك المسه دلوقتي ؟",
+        "مفيش انترنت شهر كامل ولا مفيش جنس شهر كامل ؟",
+        "بتحب تنام عريان؟",
+        "ايه الوضعيات اللي نفسك تجربها ؟",
+        "بتفكر في ايه دلوقتي ؟",
+        "أوصف بأربع كلمات اخر أداء لينا في السرير؟",
+        "بتحب تضحك أثناء العلاقة ولا تحب الموضوع يبقي جد اكتر ؟",
+        "طعم شفايفي عامل ازاي؟",
+        "ايه اكتر حاجة مثيرة بتحب اعملهالك عشان تستثار ؟",
+        "لو تقدر تلبسني حاجة عشان موعد غرامي تلبسني ايه ؟",
+        "اايه الحاجة اللي نفسك اعملهالك في السرير ؟",
+        "بتحس بالإثارة أكتر الصبح ولا بليل؟",
+        "ايه احسن موسيقي لرقصة حب من وجهة نظرك؟",
+        "بتحب النور شغال ولا مطفي أثناء العلاقة؟",
+        "ايه أكتر حاجة بتثيرك ممكن أقولهالك أثناء العلاقة؟",
+        "لو تقدر توصف جسمي بـ 3 كلمات بس هتقول إيه؟",
+        "ايه أكتر صوت بتحبه أثناء العلاقة؟",
+        "تفتكر المداعبة المثالية لازم تكون مدتها قد إيه؟",
+        "لو قدامك اختيار بين الأحضان والبوس سنة كاملة تختار إيه؟",
+        "بتحب تسمع مزيكا وأنت بتمارس العلاقة؟",
+        "ايه كان أول انطباع ليك عني؟",
+        "قول 3 أماكن تحب تمارس فيها العلاقة معايا.",
+        "عمرك حلمت حلم سافل؟ كان عن إيه؟",
+        "بتحب الكلام السافل أثناء العلاقة؟",
+        "ايه أكتر حاجة فاجأتك فيا؟",
+        "هل يوجد تحسين لشكلي تتمنى إني أعمله؟",
+        "تتخيل ليلة موعد مثالية هتكون عاملة إزاي؟",
+        "بتحبني لما بغير عليك؟",
+        "ايه أكتر منطقة في جسمك بتحب يتعمله مساج؟",
+        "لو ليك أمنية واحدة ننفذها دلوقتي في السرير، هتكون إيه؟",
+        "ايه اللبس اللي بتشوفني فيه وبتحس إنك مش قادر تقاومني؟",
+        "بتحب ننهي العلاقة إزاي؟ (هدوء ولا جنان؟)",
+        "ايه الكلمة اللي لما بقولها بتخليك تتهور؟",
+        "لو هنمثل دور (Roleplay)، تحب نكون مين؟",
+        "بتحب نغير مكان السرير لمكان تاني في البيت؟ فين؟",
+        "ايه أكتر حاجة بتعملها بتخليني أحس إني مرغوب/ة؟",
+        "لما بنصحى الصبح، إيه أول حاجة بتفكر فيها ناحيتي؟",
+        "بتحب العلاقة تكون سريعة (Quickie) ولا طويلة وبالراحة؟",
+        "ايه أكتر حاجة خجلت تطلبها مني قبل كدة؟",
+        "لو تقدر توصف أدائي بكلمة واحدة، هتكون إيه؟",
+        "بتحب نستخدم (Ice/Wax) أو أي إضافات في العلاقة؟",
+        "ايه أكتر ذكرى (سافلة) لينا مع بعض مستحيل تنساها؟",
+        "بتحبني أكون مسيطر/ة ولا مستسلم/ة أكتر؟",
+        "لو غميت عينك، إيه أكتر حاسة بتزيد عندك وقت التلامس؟",
+        "بتحب نتفرج على فيلم مع بعض قبل العلاقة؟ نوعه إيه؟",
+        "ايه أكتر حاجة بتخليك تحس بالأمان وأحنا في حضن بعض؟",
+        "لو هنختار 'كلمة سر' نوقف بيها العلاقة لو تعبنا، تكون إيه؟",
+        "بتحب العلاقة تكون في الضلمة تماماً ولا ضوء خفيف؟",
+        "ايه أكتر وقت في اليوم بتحس فيه إنك محتاجني؟",
+        "لو رجع بينا الزمن لأول ليلة، إيه اللي كنت هتعمله مختلف؟",
+        "ايه الحركة اللي بتعملها وبتحس إن رد فعلي عليها بيجننك؟",
+        "بتحب ريحة إيه فيا أكتر حاجة؟",
+        "لو طلبت منك ترقص/ي لي، هتوافق/ي؟",
+        "ايه أكتر حاجة بتخليك تضحك وأحنا مع بعض؟",
+        "بتحب نكرر العلاقة كام مرة في الأسبوع؟ بصراحة!",
+        "ايه أكتر وضع بيخليك توصل لأعلى درجة من الاستمتاع؟",
+        "لو وصفت علاقتنا بفيلم سينما، هيكون اسمه إيه؟",
+        "بتحب التقبيل يكون (Deep) ولا خفيف ورقيق؟",
+        "ايه أكتر حاجة بتضايقك وقت العلاقة ونفسك نبطلها؟",
+        "بتحب نتمشى عريانين في البيت لوحدنا؟",
+        "ايه هي أطول فترة قضيتها وأنت بتفكر فيا النهاردة؟",
+        "لو هتعملي 'Surprise' ليلة النهاردة، تتوقع تكون إيه؟",
+        "ايه أكتر حاجة بتخليك فخور بيا كشريك حياتك؟",
+        "ايه رأيك في تبادل الرسائل (Sexting)؟",
+        "تخيل إني راجع البيت مرهق تماماً من يوم طويل في الشغل، هتعمل إيه عشان تريحني؟",
+        "بتحس بالغيرة لما تلاحظ إن فيه ناس تانية بتبص عليا؟",
+        "ايه أكتر تجربة جنسية حبيتها معايا ونفسك تعيدها؟",
+        "بتحب تتفرج على نفسك في المراية وأنت بتمارس العلاقة؟",
+        "ايه أكتر حاجة بتهييجك؟",
+        "بتحب ممارسة العلاقة كل قد إيه؟"
+        ]
+    },
+    boss_dos: {
+        id: "boss_dos",
+        title: "بوس أو دوس 💋",
+        rules: "بداية اللعبة: حجز - ورقة - مقص والكسبان هيسحب ورقة بوس. اللي يجمع 6 كروت بوس لازم يبدلهم بكارت 'دوس' (تحدي قوي). الكروت المسحوبة بتخرج برا اللعبة.",
+        color: "#6a1b9a",
+        accent: "#9d4edd",
+        hasScore: false, // بنستخدم نظام الـ Boss count مش الـ Score العادي
+questions: [
+        "شريكك هيغمي عينك وهيفضل يبوس فيك من شفايفك ووشك وخدودك وفي نفس الوقت هيلعبلك في شعرك",
+        "شريكك هيقعد في حجرك ووشكو في وش بعض، وهيعملك مساج في رأسك وشعرك ورقبتك، وهيبوسك بعدها",
+        "هتقلع شريكك أي هدوم لابسها فوق وهتخليه ينام على بطنه، بعدها هتمشي إيدك على ضهره من فوق لتحت بحنية (60 ثانية)",
+        "شريكك هينام على ضهره وأنت هتبوسه في 3 أماكن مختلفة وهو هيقولك أكتر مكان حب البوسة فيه",
+        "شريكك هيبوسك ويمص ودنك بحنية، وفي نفس الوقت هيمسك مؤخرتك ويتحسسها",
+        "هتغمي عين شريكك وهيعملك مساج في الجزء الداخلي من الفخد، وبعدها هيبوس المنطقة اللي حوالين المنطقة الحساسة",
+        "شريكك هيعملك مساج في رقبتك أو كتفك، وبعدها هيبوسك في أكتر مكان بتحبه في جسمك",
+        "شريكك هيبوسك ويلحس حلمات صدرك بالتبادل بين الاتنين ببطء وشغف",
+        "هتنام على ضهرك وشريكك هيبوس سرتك وهيفضل ينزل لحد الكنز اللي بين رجليك",
+        "الجزء اللي في نص شفة الفم اللي فوق مثير جداً، شريكك هيبوس المكان ده بلسانه بعدها هيبوس الشفة كلها",
+        "هتنام على بطنك وشريكك هيغمي عينك، وهيجيب ريشة أو منديل ناعم وهيمشيه على ضهرك ومؤخرتك (60 ثانية)",
+        "شريكك هيبوسك ويعض شفايفك برقة وشغف، وكل طرف يشد شفة التاني بلسانه",
+        "شريكك هينام على ضهره وأنت هتربط إيديه الاتنين ورا راسه وهتبدأ تبوسه وتلعبه في جسمه كله بكل جنان",
+        "استخدموا قطعة ثلج ومشوها على رقبة وصدر بعض، وبعدها دفوا الأماكن دي بلسانكم وبوساتكم",
+        "شريكك هيبوسك في كل حتة في جسمك ببطء، وكل مرة يوصل لمنطقة إثارة اشرح له إحساسك وقتها"
+    ],
+    dosQuestions: [
+        "وضع 69 التقليدي: الزوجين هيناموا عكس بعض وكل واحد هيركز على إنه يمتع التاني بلسانه بقمة الهدوء.",
+        "وضع المقص: الزوجة بتنام على جنبها وبترفع رجليها والزوج بيدخل رجله في النص وبتبدأوا تتحركوا سوا ببطء.",
+        "وضع السيطرة: صاحب الكارت ده هو اللي هيكون (المسيطر) لمدة 100 ثانية، يطلب أي وضع أو فعل والتاني ينفذ فوراً.",
+        "الزوج هيسند ضهره على الحيطة والزوجة هتقعد بضهرها على فخاده وهتستند بإيدها على رجله ويبدأ الجماع.",
+        "تحدي التواصل: افضلوا باصين في عين بعض مباشرة أثناء العلاقة لأطول فترة ممكنة بدون انقطاع.",
+        "وضع القطة: الزوجة هتنام على بطنها والزوج هينام فوقها ويبوس رقبتها من ورا أثناء العلاقة وهي بتلف إيدها ورا رأسه.",
+        "وقت التصوير: صاحب الكارت يحدد مين هيصور ومين هيتصور (فيديو أو صور) لتوثيق لحظتكم المجنونة.",
+        "تحدي التذوق: حطوا صوص (شوكولاتة أو كراميل) على أماكن مثيرة، والشريك لازم يلحس الصوص ده كله بلسانه.",
+        "وضع الفراشة: الزوجة هتنام على حافة السرير وهترفع رجلها على كتف الزوج وهو واقف، لعمق ومتعة أكبر.",
+        "الزوج هيقعد والزوجة هتقعد فوقه ووشكم في وش بعض، والزوج هيضم الزوجة لحضنه ببطء وهدوء.",
+        "وضع المعلقة (Spooning): ناموا على جنبكم في نفس الاتجاه، والزوج يدخل من ورا والزوجة ترجع جسمها عليه بحميمية.",
+        "وضعية الفارسة: الزوجة فوق الزوج وهو على ضهره، والزوجة هي اللي بتتحكم بالكامل في السرعة والعمق.",
+        "تحدي الثلج: حطوا قطعة ثلج في بوقكم وتبادلوها ببوسة فرنسية طويلة لحد ما تسيح تماماً بينكم."
+    ]
+    },
+    shawk_aw_dawk: {
+    id: 'shawk_aw_dawk',
+    title: 'شوق أو دوق 🍓',
+    color: '#ffe4e6', // لون الخلفية (بينك فاتح)
+    accent: '#ff5400', // لون الكروت (فوشيا)
+    rules: 'عالم الحواس والمداعبة. اللعبة تعتمد على تنفيذ التحديات الحميمية واستخدام الحواس الخمس لزيادة التشويق بينكما.',
+    questions: [
+        "بوس شريكك من الراس للرجلين 💋",
+        "شارك مع شريكك أحلى ذكرى جنسية حصلت بينكم 💭",
+        "حاول تشقط شريكك بأحسن جملة عندك (ابدع في الدور) 😎",
+        "بص لشريكك في عينه لمدة 60 ثانية.. اللي يضحك الأول يتنفذ فيه حكم لمدة 30 ثانية 👀",
+        "قلع شريكك قطعة من هدومه من غير ما تستخدم إيدك (هو اللي يختار القطعة) 👕",
+        "بوس شريكك كأنك أول مرة تبوسه في حياتك.. بكل شوق ✨",
+        "حاول تضحك شريكك.. لو نجحت مسموحلك تعمل فيه اللي انت عايزه لمدة 30 ثانية 😂",
+        "شوق شريكك بالتعري تدريجياً ووقف في الوقت اللي تحبه 💃",
+        "خلى شريكك يقولك عايزك تعمل فيه إيه دلوقتي باستخدام كلام +21 فقط 🔞",
+        "مساج لظهر شريكك لمدة 100 ثانية (استخدم زيت لو متاح) 💆‍♂️",
+        "شريكك هيفتح الدولاب ويختارلك طقم تلبسه على ذوقه الشخصي 👗",
+        "التذوق: جرب تدوق حاجة من الثلاجة على جسم شريكك في مكان هو يختاره 😋",
+        "الحواس: استخدم حاسة الشم وقول أكتر ريحة بتحبها في جسم شريكك 👃",
+        "ممنوع استخدام اليد لمدة 30 ثانية: بوس شريكك في أكتر منطقة مثيرة بالنسبة لك 🚫",
+        "اختار وضعية نفسك تجربها واشرحها أو اعملها 'عملي' قدام شريكك 🔄",
+        "مساج لأرجل شريكك (القدم) لمدة 60 ثانية مع التركيز على الأصابع 🦶",
+        "ضوء أخضر.. ضوء أحمر: ابدأ مداعبة ولما شريكك يقول 'أحمر' لازم توقف فوراً عشان التشويق يزيد 🚦",
+        "همسة: قول في ودن شريكك أكتر حاجة بتجننك لما بيعملها في السرير 👂",
+        "اختيار القطعة: اختار القطعة اللي عايز الطرف التاني يقلعها فوراً 👗",
+        "الاعتراف: اقرأ بصوت عالي: (في علاقتنا أرجو منك تقبيل جسدي ولعق أجزائي وملاعبتي بكل حب) 🗣️",
+        "قبلات الجسم: بوس العنق والصدر والبطن قبلات متفرقة وسريعة 💋",
+        "تحديد اللمس: إيه أكتر مكان عايز تلمسه أو تبوسه في شريكك 'دلوقتي'؟ نفذ فوراً 🎯",
+        "قبلة المؤخرة: مداعبة وتقبيل منطقة المؤخرة بكل هدوء 🍑",
+        "المص الممتع: جربوا مص اللسان وتبادل القبلات الفرنسية العميقة 👅",
+        "تقبيل الزوج: الزوجة تبوس زوجها 'مص لذيذ' ولو فيه شوكولاتة استخدموها 🍫",
+        "التجريد: جرد شريكك مما تبقى من ملابسه وبوسه قبلات ساخنة في كل مكان 🔓",
+        "كارت مفتوح: اطلب من الطرف الآخر أي طلب (سافل أو رومانسي) ولازم ينفذ 🃏",
+        "طلاء الشفاه: حط طعم (عسل أو مربى) على شفايف شريكك ودوقهم بلسانك 🍯",
+        "مداعبة الأذن: استخدم لسانك وشفايفك في مداعبة أذن شريكك مع همس ناعم 👂",
+        "تحدي الثلج: مشي قطعة ثلج على جسم شريكك في أماكن متفرقة ❄️",
+        "الرقص: ارقص لشريكك رقصة مثيرة لمدة 120 ثانية على أغنيتكم المفضلة 💃",
+        "حلقة الوصل: بوسة طويلة جداً (Deep Kiss) بدون توقف لمدة 60 ثانية كاملة 💏",
+        "المسافة: قرب من شريكك جداً لحد ما أنفاسكم تلمس بعض بس ممنوع البوس لحد ما حد يستسلم 😤",
+        "السيطرة: الطرف اللي سحب الكارت هو 'القائد' لمدة 100 ثانية.. يأمر والتاني ينفذ 👑"
+    ]
+},
+// 4. درجات اللهلوبة (نظام المستويات الجديد)
+heat_meter: {
+    id: "heat_meter",
+    title: "سلم الشوق 🪜",
+    rules: "3 مستويات من المتعة: ليفل 1 (كلام واعترافات)، ليفل 2 (لمسات وشقاوة)، ليفل 3 (نار وسيطرة). اللعب بالتبادل التلقائي.. استمتعوا!",
+    color: "#4a0404",
+    accent: "#3c096c",
+    hasScore: false,
+    isMultiLevel: true, 
+    levels: {
+        level1: [
+            "إيه أكتر حاجة بتشدك فيا لما بنكون لوحدنا في البيت؟",
+            "لو رجع بينا الزمن لأول يوم تقابلنا فيه، كنت هتغير إيه؟",
+            "إيه هو 'الستايل' اللي تحب تشوفني بيه أكتر ومحرج تطلبه؟",
+            "اوصف شعورك في أول مرة مسكت فيها إيدي بجد.",
+            "إيه أكتر صفة فيا بتخليك تحس إني 'مالية عينك'؟",
+            "لو حياتنا فيلم، تختار له اسم رومانسي ولا اسم جريء؟",
+            "إيه أكتر وقت في اليوم بتشتاق فيه لحضني أوي؟",
+            "قولي 3 حاجات في جسمي بيخلوك تفقد السيطرة على نفسك.",
+            "إيه هي الكلمة اللي لما بقولها لك بتدوخك فوراً؟",
+            "لو هنقضي ليلة رمالية في فندق، تحب يكون الجو هادي ولا صاخب؟",
+            "إيه أكتر ذكرى 'شقية' بينا مش قادر تنساها أبداً؟",
+            "لو بقيت 'مارد' وبنفذ طلباتك، تطلب مني إيه 'جريء' دلوقتي؟",
+            "إيه الحاجة اللي دايماً بتعملها وبتحس إنها بتدلعني؟",
+            "اوصف ملمس بشرتي بكلمة واحدة تعبر عن إعجابك.",
+            "لو طلبت منك توصف علاقتنا بـ 'أكلة مشطشطة'.. هتسميها إيه؟",
+            "لو ليك 'سلطة كاملة' عليا ساعة في السرير، إيه أول حاجة هتطلبها؟",
+            "إيه أكتر لبس لبسته وخلاني في عينك 'كتلة إثارة' متحركة؟",
+            "إيه المكان اللي نفسي نلمس فيه بعض ومحرج/ة تطلبه مني؟",
+            "لو هنلعب لعبة 'تبادل أدوار'، تحب تكون أنت مين وأنا مين؟",
+            "بتحبني أكون هادي/ة ومستسلم/ة ولا شقي/ة ومتمرد/ة أكتر؟",
+            "إيه أول حاجة بتيجي في بالك لما بصحيك من النوم ببوسة؟",
+            "لو تقدر تخفي قطعة واحدة من هدومي دلوقتي، هتختار إيه؟",
+            "إيه أكتر 'تاتش' بعمله بيخلي جسمك يقشعر؟",
+            "بتحب كلام الحب الناعم ولا الكلام الجريء وقت العلاقة؟",
+            "لو وصفت ريحة جسمي بفاكهة، هتكون إيه؟"
+        ],
+        level2: [
+            "نظرة عين لعين لمدة دقيقة من غير رمش.. واللي يضحك ينفذ طلب للتاني.",
+            "العب في شعري برقة وقولي كلمة حب مسمعتهاش منك بقالي كتير.",
+            "غمضي عينك وحاولي تعرفي أنا بلمس وشك فين بالظبط وبإيه؟",
+            "بوسة رقيقة على رقبتي لمدة 10 ثواني كاملة.",
+            "ارسم قلب بصابعك على كف إيدي وقولي سر في ودني.",
+            "اوصف شكلي دلوقتي بـ 3 كلمات 'لهاليبو'.",
+            "دلعني باسم جديد ومجنون مكنتش بتقولهولي قبل كده.",
+            "احكي لي عن حلم 'شقية' حلمته بيا ومحكيتوش قبل كده.",
+            "بوسة على كل صباع في إيدي بالراحة مع نظرة تحدي.",
+            "قوم شيلني ولف بيا لفة كاملة في نص الصالة.",
+            "اهمسي لي في ودني: 'أنا بحب دلعك أوي' وشوفي ردي.",
+            "لو هختار لك 'طقم' تلبسيه لي دلوقتي، تفتكري هيكون إيه؟",
+            "عضني عضة رقيقة في كتفي وريني 'شرك'.",
+            "مساج سريع لرقبتي وكتفي لمدة 120 ثانية عشان أفصل.",
+            "بوسة على الجبين تعبر عن التقدير والحب الكبير.",
+            "استخدم لسانك فقط عشان ترسم أول حرف من اسمي على رقبتي.",
+            "بوسة في 'باطن الركبة' أو 'كف الإيد' وقولي إحساسك إيه.",
+            "غمي عيني بشال، وخليني أحس بلمساتك في 3 أماكن مختلفة.",
+            "مساج لرجلي بصوابعك، وكل صباع تبوسه بوسة 'فرنساوي'.",
+            "اهمس لي في ودني بأكتر حاجة 'سافلة' نفسك نعملها الليلة.",
+            "فك زرار أو قطعة واحدة من هدومي باستخدام 'سنانك' بس.",
+            "بوسة طويلة في الرقبة من ورا مع همس ناعم جداً.",
+            "مرر إيدك تحت لبسي ببطء واحكي لي إنت حاسس بإيه دلوقتي.",
+            "بوسني بوسة 'خاطفة' في كل حتة في وشي ما عدا شفايفي.",
+            "حاول تضحكني بأي طريقة، لو نجحت لك طلب يتنفذ حالاً."
+        ],
+        level3: [
+            "بوسة 'فرنسية' سريعة وخاطفة.. وريني الشطارة.",
+            "غمضي عينيكي واستقبلي بوسة في مكان من اختياري أنا.",
+            "همس في ودني بكلمة 'جريئة' نفسك أعملها معاك الليلة.",
+            "لو معاك 5 دقائق 'حرية كاملة' تعمل فيا اللي أنت عايزه، هتعمل إيه؟",
+            "بوسة طويلة في الرقبة من الخلف.. وريني إحساسك.",
+            "غمضي عينك واستني 'تاتش' في مكان سري لمدة 5 ثواني.",
+            "هات بوسة في باطن الإيد.. دي بوسة العشق الصامت.",
+            "لو إحنا في فيلم 'للكبار فقط'، تفتكري نهايته هتكون إيه دلوقتي؟",
+            "بوسة على 'كتفي' العريان وقولي كلمة توصف جماله.",
+            "اختار مكان في جسمي وبوسه بوسة 'نار'.. وريني اللهلوبة.",
+            "قولي لي أكتر حاجة بتخليكي تحسي بـ 'أنوثتك' وأنا قريب منك.",
+            "لو ليك طلب 'واحد' جريء أنفذه دلوقتي، اطلبه فوراً.",
+            "غمض عينك وخليني أرسم قلب بلساني على خدك.",
+            "اوصف لي إحساسك وأنت نايم في حضني والجو هدي خالص.",
+            "بوسة تحت الودن مع حركة 'شقاوة' صغيرة.",
+            "قولي 3 كلمات بتوصف 'حرارة' حبنا في اللحظة دي.",
+            "نظرة 'تحدي' في عيني وقولي: أنتي ملكي لوحدي الليلة.",
+            "لو هنرقص 'سلو' دلوقتي بدون موسيقى، تحب نكون قريبين لدرجة إيه؟",
+            "نفذ 'حكم' سريع بإنك تبوسني في 3 أماكن مختلفة في وشي.",
+            "بوسة فرنسية عميقة جداً لمدة دقيقة كاملة بدون توقف.",
+            "استخدم (التلج أو لسانك) وامشي بيه على صدري لحد ما أرتعش.",
+            "جردني من قطعة هدوم أنا بختارها، وبوس المكان اللي كان متغطي.",
+            "الطرف التاني يكون 'مسيطر' تماماً لمدة 120 ثانية.. يعمل اللي هو عايزه.",
+            "اختار أي صوص وحطه على مكان مثير في جسمي ودوقه بلسانك."
+        ]
+    }
+},
+    positions_game: {
+    id: "positions_game",
+    title: "أوضاع لهاليبو 🛌",
+    rules: "مش عارفين تختاروا إيه؟ سيبوا اللعبة تختار لكم وضع عشوائي يجدد ليلتكم. دوس على الزرار ونفذوا فوراً!",
+    color: "#2d005d",
+    accent: "#ff8c00",
+    hasScore: false,
+    questions: [
+        { text: "وضعية التبشيري (Missionary Position): يستلقي الرجل فوق المرأة وجهاً لوجه. هذا الوضع كلاسيكي ويوفر حميمية كبيرة وتواصلاً بصرياً مستمراً.", img: "Images/Image1.jpg" },
+        { text: "وضعية الفارسة (Cowgirl Position): تجلس المرأة فوق الرجل وهو مستلقٍ على ظهره. يمنح هذا الوضع المرأة التحكم الكامل في السرعة والعمق.", img: "Images/Image2.jpg" },
+        { text: "وضعية الخلفي (Doggy Style): تركع المرأة على يديها وركبتيها ويدخل الرجل من الخلف. يتيح هذا الوضع إيلاجاً عميقاً وإثارة قوية.", img: "Images/Image3.jpg" },
+        { text: "وضعية الملعقة (Spooning): يستلقي الشريكان على جانبيهما في نفس الاتجاه. وضعية مريحة جداً وتسمح بالتقارب الجسدي واللمسات الرقيقة.", img: "Images/Image4.jpg" },
+        { text: "وضعية الفارسة العكسية (Reverse Cowgirl): تجلس المرأة فوق الرجل لكن بظهرها نحوه. يتيح هذا الوضع زوايا رؤية مختلفة وتحكماً كاملاً للمرأة.", img: "Images/Image5.jpg" },
+        { text: "وضعية الوقوف (Standing Position): يقف الشريكان وجهاً لوجه. تتطلب هذه الوضعية بعض القوة البدنية وتضيف حيوية وتغييراً للروتين.", img: "Images/Image6.jpg" },
+        { text: "وضعية المقص (Scissors Position): يستلقي الشريكان وجهاً لوجه مع تشابك أرجلهما مثل المقص. توفر اتصالاً جسدياً وثيقاً وزوايا إثارة فريدة.", img: "Images/Image7.jpg" },
+        { text: "وضعية الجلوس (Sitting Position): يجلس الرجل على كرسي أو حافة السرير وتجلس المرأة في حضنه. تسمح بتبادل القبلات والاحتضان بسهولة.", img: "Images/Image8.jpg" },
+        { text: "وضعية الفراشة (Butterfly Position): تستلقي المرأة على حافة السرير مع رفع ساقيها، بينما يقف الرجل أمامها. توفر عمقاً كبيراً في الإيلاج.", img: "Images/Image9.jpg" },
+        { text: "وضعية الجسر (Bridge Position): تستلقي المرأة وترفع حوضها للأعلى مدعومة بيديها، بينما يدخل الرجل من الأعلى. تزيد من قوة الإثارة.", img: "Images/Image10.jpg" },
+        { text: "وضعية القرفصاء (Squatting Position): يجلس الرجل على الأرض أو السرير بينما تجلس المرأة في وضع القرفصاء فوقه. يسمح هذا الوضع للمرأة بالتحكم الكامل في الحركة والإيقاع.", img: "Images/Image11.jpg" },
+        { text: "وضعية الرقص (Lap Dance Position): يجلس الرجل على كرسي بينما تجلس المرأة فوقه وتلتف ذراعيها حول رقبته. يسمح بالتقارب الجسدي وتبادل القبلات.", img: "Images/Image12.jpg" },
+        { text: "وضعية المقص المتقاطع (Cross-Scissors Position): يستلقي الشريكان على ظهريهما بشكل متعاكس مع تشابك الأقدام. يتيح تجربة فريدة في زوايا الدخول.", img: "Images/Image13.jpg" },
+        { text: "وضعية الحضانة (Cradling Position): يجلس الرجل ويمد ساقيه أمامه بينما تجلس المرأة في حضنه وتلتف ساقيها حول خصره. تزيد من الحميمية بشكل كبير.", img: "Images/Image14.jpg" },
+        { text: "وضعية الفيل (Elephant Position): تجلس المرأة على يديها وركبتيها بينما يدخل الرجل من الخلف، مع إمكانية خفض الجسد لزيادة الراحة.", img: "Images/Image15.jpg" },
+        { text: "وضعية الجلوس المتعاكسة (Reverse Sitting Position): يجلس الرجل والمرأة متعاكسين على كرسيين بجانب بعضهما البعض مع تداخل أرجلهما.", img: "Images/Image16.jpg" },
+        { text: "وضعية الوجه للأسفل (Face Down Position): تستلقي المرأة على بطنها بينما يجلس الرجل خلفها ويدخل من الخلف. يتيح زوايا دخول مختلفة ومثيرة.", img: "Images/Image17.jpg" },
+        { text: "وضعية القرفصاء العكسية (Reverse Squatting Position): يجلس الرجل وتجلس المرأة فوقه بظهرها نحوه في وضع القرفصاء للتحكم الكامل في الإيقاع.", img: "Images/Image18.jpg" },
+        { text: "وضعية الوقوف العكسي (Reverse Standing Position): تقف المرأة بظهرها إلى الرجل بينما يمسك بخصرها ويدخل من الخلف. وضعية مليئة بالإثارة والمفاجأة.", img: "Images/Image19.jpg" },
+        { text: "وضعية المقص الجانبي (Side-Scissors Position): يستلقي الشريكان على جانبيهما بشكل متعاكس مع تشابك الأقدام لتجربة زوايا جديدة.", img: "Images/Image20.jpg" },
+        { text: "وضعية القوس (Arch Position): ترفع المرأة حوضها مشكلة شكلاً شبيهاً بالجسر وتدعم نفسها بكتفيها، بينما يمتطيها الرجل من الأعلى لإيلاج عميق.", img: "Images/Image21.jpg" },
+        { text: "وضعية العناق (Embrace Position): يجلس الشريكان في وضع العناق الوثيق بالأذرع والسيقان، مما يسهل تبادل القبلات واللمسات الحميمية.", img: "Images/Image22.jpg" },
+        { text: "وضعية الطاولة (Table Position): تجلس المرأة على حافة الطاولة بينما يقف الرجل أمامها. وضعية تسمح بزوايا دخول مميزة وتغيير للمكان.", img: "Images/Image23.jpg" },
+        { text: "وضعية السلم (Staircase Position): يجلس الشريكان على درجات السلم بشكل متعاكس مع تداخل الأرجل، مما يضيف طابعاً مختلفاً للتجربة.", img: "Images/Image24.jpg" },
+        { text: "وضعية الكلب الكسول (Lazy Doggy Position): تطور للوضع الخلفي حيث يكون كلاهما مستلقيان للأسفل، مما يجمع بين الراحة والإيلاج الخلفي العميق.", img: "Images/Image25.jpg" }
+        ]
+    }
+};
