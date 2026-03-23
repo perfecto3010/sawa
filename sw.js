@@ -1,4 +1,4 @@
-const cacheName = 'sawa-v2.3';
+const cacheName = 'sawa-v2.4';
 const assets = [
   './',
   './index.html',
